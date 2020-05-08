@@ -1,0 +1,24 @@
+{
+  "name": "bbchain",
+  "version": "1.0.0",
+  "description": "Minimalist blockchain",
+  "main": "index.js",
+  "dependencies": {
+    "typescript": "^3.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "./node_modules/.bin/tsc && node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabremx/bbchain.git"
+  },
+  "author": "fabremx",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fabremx/bbchain/issues"
+  },
+  "homepage": "https://github.com/fabremx/bbchain#readme"
+}
