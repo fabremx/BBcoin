@@ -4,12 +4,19 @@
   "description": "Minimalist blockchain",
   "main": "index.js",
   "dependencies": {
+    "@types/crypto-js": "^3.1.45",
+    "crypto-js": "^4.0.0",
     "typescript": "^3.8.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "concurrently": "^5.2.0",
+    "jest": "^25.0.0",
+    "ts-jest": "^25.5.1"
+  },
   "scripts": {
     "start": "./node_modules/.bin/tsc && node dist/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
