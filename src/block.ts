@@ -1,5 +1,3 @@
-import sha256 from "crypto-js/sha256";
-
 export class Block {
   index: number;
   previousHash: string;
@@ -19,11 +17,5 @@ export class Block {
     this.timestamp = timestamp;
     this.data = data;
     this.hash = hash;
-  }
-
-  calculateHash() {
-    return sha256(
-      this.index + this.previousHash + this.timestamp + this.data
-    ).toString();
   }
 }
