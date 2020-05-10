@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/tsc && node dist/app.js",
-    "test": "jest"
+    "test": "jest ./src"
   },
   "repository": {
     "type": "git",

@@ -1,25 +1,28 @@
 import * as WebSocket from "ws";
 
-export default class Websocket {
-  P2P_PORT: number = 6002;
+declare var process: {
+  env: {
+    P2P_PORT: number;
+  };
+};
+
+export class P2pServer {
+  P2P_PORT: number = process.env.P2P_PORT || 6001;
   server: any;
   sockets: WebSocket[] = [];
 
   constructor() {
     this.server = new WebSocket.Server({ port: this.P2P_PORT });
+    // When someone connect to the server
     this.server.on("connection", (ws: WebSocket) => this.initConnection(ws));
   }
 
   initConnection(ws: WebSocket) {
     this.sockets.push(ws);
-  }
 
-  connectToPeers(newPeers: WebSocket[]) {
-    newPeers.forEach((peer: WebSocket) => {
-      this.server.on("open", () => console.log("connexion ouverte"));
-      this.server.on("error", () => {
-        console.log("échec de la connexion");
-      });
+    this.server.on("message", (data: string) => {
+      var message = JSON.parse(data);
+      console.log("Message Reçu" + JSON.stringify(message));
     });
   }
 
@@ -31,3 +34,5 @@ export default class Websocket {
     this.sockets.forEach((socket) => this.write(socket, message));
   }
 }
+
+export default new P2pServer();

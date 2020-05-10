@@ -78,7 +78,7 @@ export default class BlockchainService {
       JSON.stringify(blockchain[0]) !==
       JSON.stringify(BlockchainService.getGenesisBlock())
     ) {
-      console.error("Block Invalid: invalid genesis block");
+      console.error("Blockchain Invalid: invalid genesis block");
       return false;
     }
 
@@ -87,10 +87,14 @@ export default class BlockchainService {
         index !== blockchain.length - 1 &&
         !this.isNewBlockValid(blockchain[index], blockchain[index + 1])
       ) {
+        console.error(
+          `Blockchain Invalid: invalid block: ${blockchain[index]}`
+        );
         return false;
       }
     }
 
+    console.log("Blockchain valid");
     return true;
   }
 
@@ -99,9 +103,11 @@ export default class BlockchainService {
       this.isBlockchainValid(newBlockchain) &&
       newBlockchain.length > currentBlockchain.length
     ) {
+      console.log("Keep actual blockchain");
       return newBlockchain;
     }
 
+    console.log("Replace blockchain with the new one");
     return currentBlockchain;
   }
 }

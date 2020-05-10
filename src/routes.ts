@@ -1,21 +1,18 @@
-import express from "express";
-import { Block } from "./block";
 import BlockchainService from "./blockchain.service";
-import Websocket from "./sockets";
+import P2pServer from "./p2pServer";
+import P2pServerService from "./p2pServer.service";
+import httpServer from "./httpServer";
+import blockchain from "./blockchain";
 
 export default class Routes {
   public blockchainService: BlockchainService = new BlockchainService();
 
-  public routes(
-    app: express.Application,
-    websocketServer: Websocket,
-    blockchain: Block[]
-  ): void {
-    app.get("/blocks", (req, res) => {
-      res.send(JSON.stringify(blockchain));
+  public routes(): void {
+    httpServer.get("/blocks", (req, res) => {
+      res.status(200).send(JSON.stringify(blockchain));
     });
 
-    app.post("/mineBlock", (req, res) => {
+    httpServer.post("/mineBlock", (req, res) => {
       var newBlock = this.blockchainService.generateNextBlock(
         blockchain,
         req.body.data
@@ -23,22 +20,22 @@ export default class Routes {
 
       //   this.blockchainService.addBlock(newBlock);
 
-      websocketServer.broadcast("message");
+      P2pServer.broadcast("message");
 
       console.log("block ajouté : " + JSON.stringify(newBlock));
       res.send();
     });
 
-    app.get("/peers", (req, res) => {
+    httpServer.get("/peers", (req, res) => {
       res.send(
-        websocketServer.sockets.map(
+        P2pServer.sockets.map(
           (s: any) => s._socket.remoteAddress + ":" + s._socket.remotePort
         )
       );
     });
 
-    app.post("/addPeer", (req, res) => {
-      websocketServer.connectToPeers([req.body.peer]);
+    httpServer.post("/addPeer", (req, res) => {
+      P2pServerService.connectToPeers([req.body.peer]);
       res.send();
     });
   }

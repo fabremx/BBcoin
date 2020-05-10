@@ -1,30 +1,31 @@
 import express from "express";
-import * as bodyParser from "body-parser";
+import p2pServer, { P2pServer } from "./p2pServer";
+import WebSocketService from "./p2pServer.service";
+import httpServer from "./httpServer";
 import Routes from "./routes";
-import Websocket from "./sockets";
-import { Block } from "./block";
-import BlockchainService from "./blockchain.service";
 
 class App {
-  public blockchain: Block[] = [];
-  public app: express.Application;
-  public ws: Websocket = new Websocket();
-  public routes: Routes = new Routes();
+  public initialPeers = process.env.PEERS ? process.env.PEERS.split(",") : [];
+  public httpServer!: express.Application;
+  public p2pServer!: P2pServer;
+  public httpRoutes!: Routes;
 
   constructor() {
-    this.initBlockchain();
-    this.app = express();
-    this.config();
-    this.routes.routes(this.app, this.ws, this.blockchain);
+    console.log("App constructor", this.initialPeers);
+    WebSocketService.connectToPeers(this.initialPeers);
+    this.initHttpServer();
+    this.initP2PServer();
   }
 
-  private config(): void {
-    this.app.use(bodyParser.json());
+  private initHttpServer(): void {
+    this.httpServer = httpServer;
+    this.httpRoutes = new Routes();
+    this.httpRoutes.routes();
   }
 
-  private initBlockchain() {
-    this.blockchain = [BlockchainService.getGenesisBlock()];
+  private initP2PServer() {
+    this.p2pServer = p2pServer;
   }
 }
 
-export default new App().app;
+new App();

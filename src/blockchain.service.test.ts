@@ -5,6 +5,7 @@ import BlockchainService from "./blockchain.service";
 const blockchainService = new BlockchainService();
 const MOCKED_TIMESTAMP = 2020;
 jest.spyOn(console, "error").mockImplementation();
+jest.spyOn(console, "log").mockImplementation();
 jest
   .spyOn(Date.prototype, "getTime")
   .mockImplementation(() => MOCKED_TIMESTAMP);
