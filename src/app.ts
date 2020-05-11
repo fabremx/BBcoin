@@ -11,7 +11,6 @@ class App {
   public httpRoutes!: Routes;
 
   constructor() {
-    console.log("App constructor", this.initialPeers);
     WebSocketService.connectToPeers(this.initialPeers);
     this.initHttpServer();
     this.initP2PServer();

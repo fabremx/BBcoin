@@ -15,22 +15,35 @@ export class P2pServer {
     this.server = new WebSocket.Server({ port: this.P2P_PORT });
     // When someone connect to the server
     this.server.on("connection", (ws: WebSocket) => this.initConnection(ws));
+    console.log(`Listening P2P server on port : ${this.P2P_PORT}`);
   }
 
-  initConnection(ws: WebSocket) {
+  initConnection(ws: WebSocket): void {
+    console.log(`Someone connected to the server`);
+
     this.sockets.push(ws);
 
-    this.server.on("message", (data: string) => {
+    ws.on("message", (data: string) => {
       var message = JSON.parse(data);
       console.log("Message Reçu" + JSON.stringify(message));
     });
+
+    ws.on("close", () => this.closeConnection(ws));
+    ws.on("error", () => this.closeConnection(ws));
+
+    this.write(ws, "Successfully connected to the P2P server");
   }
 
-  write(socket: WebSocket, message: any) {
+  closeConnection(ws: WebSocket): void {
+    console.log(`Closing the connection`);
+    this.sockets.splice(this.sockets.indexOf(ws), 1);
+  }
+
+  write(socket: WebSocket, message: any): void {
     socket.send(JSON.stringify(message));
   }
 
-  broadcast(message: any) {
+  broadcast(message: any): void {
     this.sockets.forEach((socket) => this.write(socket, message));
   }
 }
