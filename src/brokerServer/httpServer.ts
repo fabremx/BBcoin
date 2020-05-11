@@ -1,9 +1,9 @@
-import { BROKER_SERVER_PORT } from "./../config/env";
+import { BROKER_HTTP_PORT } from "./../config/env";
 import express from "express";
 import * as bodyParser from "body-parser";
 
 class HttpServer {
-  public HTTP_PORT: number = BROKER_SERVER_PORT;
+  public HTTP_PORT: number = BROKER_HTTP_PORT;
   public server!: express.Application;
 
   constructor() {
