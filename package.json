@@ -27,7 +27,8 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/tsc && node dist/app.js",
-    "test": "jest ./src"
+    "broker": "./node_modules/.bin/tsc && node dist/brokerServer/brokerServer.js",
+    "test": "jest ./src/*"
   },
   "repository": {
     "type": "git",
