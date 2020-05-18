@@ -12,35 +12,53 @@ export class WebSocketServer {
       this.addNode(ws, req)
     );
 
+    this.server.on("close", (_ws: WebSocket, req: any) => {
+      this.deleteNode(req);
+    });
+
     console.log(`Listening P2P server on port : ${this.P2P_PORT}`);
   }
 
   addNode(websocket: WebSocket, req: any): void {
-    const nodePort = req.url.split("=")[1];
-    const nodeUrl = `ws://localhost:${nodePort}`;
-
+    const nodeUrl = this.getUrlFrom(req);
     console.log(`${nodeUrl} connected to the server`);
+
     if (this.connectedNodes.some((node: any) => node.url === nodeUrl)) {
+      console.log("Node already in the connected list. Do nothing.");
       return;
     }
 
+    console.log("Add new node to the connected list");
     this.connectedNodes.push({
       ws: websocket,
       url: nodeUrl,
     });
   }
 
-  deleteNode(nodeUrl: string): void {
+  deleteNode(req: any): void {
+    const nodeUrl = this.getUrlFrom(req);
     console.log(`${nodeUrl} disconnected to the server`);
 
     const nodeIndexToDelete = this.connectedNodes.findIndex(
       (node: any) => node.url === nodeUrl
     );
+
     if (nodeIndexToDelete < 0) {
+      console.log("Node already deleted. Do nothing.");
       return;
     }
 
+    console.log("Delete node.");
     this.connectedNodes.splice(nodeIndexToDelete, 1);
+  }
+
+  private getUrlFrom(req: any): string {
+    const nodePort = req.url.split("=")[1];
+    return `ws://localhost:${nodePort}`;
+  }
+
+  getConnectedNodesURL() {
+    return this.connectedNodes.map((ws: any) => ws.url);
   }
 }
 

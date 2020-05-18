@@ -1,5 +1,6 @@
 import express from "express";
 import * as bodyParser from "body-parser";
+import Routes from "./routes";
 
 declare var process: {
   env: {
@@ -14,6 +15,8 @@ class HttpServer {
   constructor() {
     this.server = express();
     this.server.use(bodyParser.json());
+
+    Routes.setRoutes(this.server);
 
     this.server.listen(this.HTTP_PORT, () => {
       console.log(`HTTP Server listening on port ${this.HTTP_PORT}`);

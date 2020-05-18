@@ -1,3 +1,4 @@
+import { BROKER_WEBSOCKET_PORT } from "./config/env";
 import * as WebSocket from "ws";
 
 declare var process: {
@@ -12,7 +13,14 @@ export class P2pServer {
   sockets: WebSocket[] = [];
 
   constructor() {
+    // Connect to the broker server
+    new WebSocket.default(
+      `ws://localhost:${BROKER_WEBSOCKET_PORT}?nodePort=${this.P2P_PORT}`
+    );
+
+    // Create Node Server
     this.server = new WebSocket.Server({ port: this.P2P_PORT });
+
     // When someone connect to the server
     this.server.on("connection", (ws: WebSocket) => this.initConnection(ws));
     console.log(`Listening P2P server on port : ${this.P2P_PORT}`);
