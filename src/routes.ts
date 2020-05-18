@@ -2,7 +2,7 @@ import express from "express";
 import BlockchainService from "./blockchain.service";
 import P2pServer from "./p2pServer";
 import * as p2pUtils from "./p2p.utils";
-import blockchain from "./blockchain";
+import blockchain from "./models/blockchain";
 
 export default class Routes {
   static setRoutes(server: express.Application): void {
@@ -10,6 +10,13 @@ export default class Routes {
 
     server.get("/blocks", (req, res) => {
       res.status(200).send(JSON.stringify(blockchain));
+    });
+
+    server.get("/connectedTo", (req, res) => {
+      const connectedTo = P2pServer.getNodesConnectionsURL(
+        P2pServer.connectedTo
+      );
+      res.status(200).send(JSON.stringify(connectedTo));
     });
 
     server.post("/mineBlock", (req, res) => {
@@ -28,15 +35,10 @@ export default class Routes {
 
     server.get("/peers", (req, res) => {
       res.send(
-        P2pServer.sockets.map(
-          (s: any) => s._socket.remoteAddress + ":" + s._socket.remotePort
+        P2pServer.connectedTo.map(
+          (s: any) => s.ws._socket.remoteAddress + ":" + s.ws._socket.remotePort
         )
       );
-    });
-
-    server.post("/addPeer", (req, res) => {
-      p2pUtils.connectToPeers([req.body.peer]);
-      res.send();
     });
   }
 }

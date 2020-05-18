@@ -1,4 +1,4 @@
-import BlockchainService from "./blockchain.service";
+import BlockchainService from "../blockchain.service";
 import { Block } from "./block";
 
 export class Blockchain {

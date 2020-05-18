@@ -2,8 +2,11 @@ jest.spyOn(console, "error").mockImplementation();
 jest.spyOn(console, "log").mockImplementation();
 
 import webSocketServerInstance, { WebSocketServer } from "./webSocketServer";
+import Node from "../models/Node";
 
 let webSocketServer: WebSocketServer;
+
+jest.mock("ws");
 
 describe("WebSocket Server for borker server", () => {
   beforeAll(() => {
@@ -29,9 +32,12 @@ describe("WebSocket Server for borker server", () => {
 
     it("should NOT add the connected node when the same node connect but is already registered", () => {
       // Given
+
       webSocketServer.connectedNodes = [
-        { ws: "node1", url: "ws://localhost:6001" },
-        { ws: "node2", url: "ws://localhost:6002" },
+        // @ts-ignore
+        new Node("node1", "ws://localhost:6001"),
+        // @ts-ignore
+        new Node("node2", "ws://localhost:6002"),
       ];
 
       const ws = "node1";
@@ -56,18 +62,20 @@ describe("WebSocket Server for borker server", () => {
     it("should delete node when node disconnect", () => {
       // Given
       webSocketServer.connectedNodes = [
-        { ws: "node1", url: "ws://localhost:6001" },
-        { ws: "node2", url: "ws://localhost:6002" },
-        { ws: "node3", url: "ws://localhost:6003" },
+        // @ts-ignore
+        new Node("node1", "ws://localhost:6001"),
+        // @ts-ignore
+        new Node("node2", "ws://localhost:6002"),
+        // @ts-ignore
+        new Node("node3", "ws://localhost:6003"),
       ];
 
-      const req = {
-        url: "ws://localhost:6002",
-      };
+      // @ts-ignore
+      const ws = "node2";
 
       // When
       // @ts-ignore
-      webSocketServer.deleteNode(req);
+      webSocketServer.deleteNode(ws);
 
       // Then
       const expectedResult = [
@@ -80,8 +88,10 @@ describe("WebSocket Server for borker server", () => {
     it("should do nothing when the node to delete is already deleted", () => {
       // Given
       webSocketServer.connectedNodes = [
-        { ws: "node1", url: "ws://localhost:6001" },
-        { ws: "node3", url: "ws://localhost:6003" },
+        // @ts-ignore
+        new Node("node1", "ws://localhost:6001"),
+        // @ts-ignore
+        new Node("node3", "ws://localhost:6003"),
       ];
 
       const req = {
@@ -105,8 +115,10 @@ describe("WebSocket Server for borker server", () => {
     it("should return empty array when connectedNodes is empty", () => {
       // Given
       const connectedNodes = (webSocketServer.connectedNodes = [
-        { ws: "node1", url: "ws://localhost:6001" },
-        { ws: "node3", url: "ws://localhost:6003" },
+        // @ts-ignore
+        new Node("node1", "ws://localhost:6001"),
+        // @ts-ignore
+        new Node("node3", "ws://localhost:6003"),
       ]);
 
       // Given
