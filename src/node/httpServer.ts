@@ -1,7 +1,6 @@
 import HttpServer from "../commons/httpServer";
-import BlockchainService from "../node/blockchain.service";
 import NodeServer from "../node/nodeServer";
-import blockchain from "../commons/blockchain";
+import Blockchain from "../commons/blockchain";
 
 declare var process: {
   env: {
@@ -10,8 +9,6 @@ declare var process: {
 };
 
 class NodeHttpServer extends HttpServer {
-  blockchainService: BlockchainService = new BlockchainService();
-
   constructor() {
     super(process.env.HTTP_PORT || 3001);
     this.setNodeRoutes();
@@ -19,7 +16,7 @@ class NodeHttpServer extends HttpServer {
 
   setNodeRoutes(): void {
     this.server.get("/blocks", (req, res) => {
-      res.status(200).send(JSON.stringify(blockchain));
+      res.status(200).send(JSON.stringify(Blockchain.blockchain));
     });
 
     this.server.get("/peers", (req, res) => {
@@ -33,10 +30,7 @@ class NodeHttpServer extends HttpServer {
     });
 
     this.server.post("/mineBlock", (req, res) => {
-      var newBlock = this.blockchainService.generateNextBlock(
-        blockchain,
-        req.body.data
-      );
+      var newBlock = Blockchain.generateNextBlock(req.body.data);
 
       //   this.blockchainService.addBlock(newBlock);
 
