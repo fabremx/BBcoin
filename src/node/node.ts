@@ -1,12 +1,16 @@
-import { BROKER_HTTP_PORT } from "./config/env";
+import {
+  BROKER_HTTP_PORT,
+  HTTP_URL_BASE,
+  INTERVAL_RETRIEVE_PEERS,
+} from "../config/env";
 import express from "express";
-import p2pServer, { P2pServer } from "./p2pServer";
+import nodeServer, { NodeServer } from "./nodeServer";
 import httpServer from "./httpServer";
 import fetch from "node-fetch";
 
-class App {
+class Node {
   public httpServer!: express.Application;
-  public p2pServer!: P2pServer;
+  public nodeServer!: NodeServer;
 
   public launch() {
     this.initHttpServer();
@@ -16,7 +20,7 @@ class App {
   private async getPeers(): Promise<string[]> {
     try {
       const response = await fetch(
-        `http://localhost:${BROKER_HTTP_PORT}/getNodes`
+        `${HTTP_URL_BASE}:${BROKER_HTTP_PORT}/getNodes`
       );
 
       const result = await response.json();
@@ -32,16 +36,16 @@ class App {
   }
 
   private initP2PServer() {
-    this.p2pServer = p2pServer;
+    this.nodeServer = nodeServer;
 
     setInterval(async () => {
       console.log("\nlooking for peers...");
       const peers: string[] = await this.getPeers();
 
       console.log("All peers connected: ", peers);
-      this.p2pServer.connectToPeers(peers);
-    }, 5000);
+      this.nodeServer.connectToPeers(peers);
+    }, INTERVAL_RETRIEVE_PEERS);
   }
 }
 
-new App().launch();
+new Node().launch();

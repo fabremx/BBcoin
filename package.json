@@ -25,8 +25,8 @@
     "typescript": "^3.8.3"
   },
   "scripts": {
-    "start": "./node_modules/.bin/tsc && node dist/app.js",
-    "broker": "./node_modules/.bin/tsc && node dist/brokerServer/brokerServer.js",
+    "node": "./node_modules/.bin/tsc && node dist/node/node.js",
+    "broker": "./node_modules/.bin/tsc && node dist/broker/broker.js",
     "test": "jest ./src/*"
   },
   "repository": {

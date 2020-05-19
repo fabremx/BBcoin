@@ -1,4 +1,4 @@
-import BlockchainService from "../blockchain.service";
+import BlockchainService from "../node/blockchain.service";
 import { Block } from "./block";
 
 const mockGenesisBlock = "genesis block";

@@ -1,4 +1,4 @@
-import { Block } from "./models/block";
+import { Block } from "../commons/block";
 import sha256 from "crypto-js/sha256";
 
 export default class BlockchainService {

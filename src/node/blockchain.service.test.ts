@@ -1,5 +1,5 @@
 import sha256 from "crypto-js/sha256";
-import { Block } from "./models/block";
+import { Block } from "../commons/block";
 import BlockchainService from "./blockchain.service";
 
 const blockchainService = new BlockchainService();

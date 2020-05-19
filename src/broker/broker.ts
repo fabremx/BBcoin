@@ -2,7 +2,7 @@ import express from "express";
 import webSocketServer, { WebSocketServer } from "./webSocketServer";
 import httpServer from "./httpServer";
 
-class BrokerServer {
+class Broker {
   public httpServer!: express.Application;
   public webSocketServer!: WebSocketServer;
 
@@ -20,4 +20,4 @@ class BrokerServer {
   }
 }
 
-new BrokerServer();
+new Broker();

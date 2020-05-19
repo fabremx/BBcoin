@@ -2,7 +2,7 @@ jest.spyOn(console, "error").mockImplementation();
 jest.spyOn(console, "log").mockImplementation();
 
 import webSocketServerInstance, { WebSocketServer } from "./webSocketServer";
-import Node from "../models/Node";
+import Node from "../commons/Node";
 
 let webSocketServer: WebSocketServer;
 

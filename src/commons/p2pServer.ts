@@ -1,21 +1,14 @@
-import { BROKER_WEBSOCKET_PORT } from "./../config/env";
-import * as WebSocket from "ws";
-import Node from "../models/Node";
+import WebSocket from "ws";
+import Node from "./Node";
 
-export class WebSocketServer {
-  P2P_PORT: number = BROKER_WEBSOCKET_PORT;
-  server: any;
+export default class P2pServer {
+  P2P_PORT!: number;
+  server!: WebSocket.Server;
   connectedNodes: Node[] = [];
 
-  constructor() {
+  constructor(P2P_PORT: number) {
+    this.P2P_PORT = P2P_PORT;
     this.server = new WebSocket.Server({ port: this.P2P_PORT });
-
-    // When client connect to the broker
-    this.server.on("connection", (ws: WebSocket, req: any) => {
-      this.handleNodeClient(ws);
-      this.addNode(ws, req);
-    });
-
     console.log(`Listening P2P server on port : ${this.P2P_PORT}`);
   }
 
@@ -48,20 +41,18 @@ export class WebSocketServer {
     }
 
     console.log(
-      `${this.connectedNodes[nodeIndexToDelete].url} disconnected to the server. Delete it.`
+      `${this.connectedNodes[nodeIndexToDelete].url} disconnected. Delete it.`
     );
 
     this.connectedNodes.splice(nodeIndexToDelete, 1);
+  }
+
+  getConnectedNodesURL() {
+    return this.connectedNodes.map((ws: any) => ws.url);
   }
 
   private getUrlFrom(req: any): string {
     const nodePort = req.url.split("=")[1];
     return `ws://localhost:${nodePort}`;
   }
-
-  getConnectedNodesURL() {
-    return this.connectedNodes.map((ws: any) => ws.url);
-  }
 }
-
-export default new WebSocketServer();

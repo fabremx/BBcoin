@@ -1,23 +1,18 @@
-import { BROKER_HTTP_PORT } from "./../config/env";
+import { BROKER_HTTP_PORT } from "../config/env";
 import express from "express";
-import HttpRoutes from "./httpRoutes";
 import * as bodyParser from "body-parser";
 
-class HttpServer {
+export default class HttpServer {
   public HTTP_PORT: number = BROKER_HTTP_PORT;
   public server!: express.Application;
-  public httpRoutes!: HttpRoutes;
 
-  constructor() {
+  constructor(HTTP_PORT: number) {
+    this.HTTP_PORT = HTTP_PORT;
     this.server = express();
     this.server.use(bodyParser.json());
-
-    HttpRoutes.setRoutes(this.server);
 
     this.server.listen(this.HTTP_PORT, () => {
       console.log(`Broker HTTP Server listening on port ${this.HTTP_PORT}`);
     });
   }
 }
-
-export default new HttpServer().server;
