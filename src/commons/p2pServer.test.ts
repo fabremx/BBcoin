@@ -10,7 +10,7 @@ const p2pServer: P2pServer = new P2pServer(PORT);
 jest.mock("ws");
 
 describe("P2p Server Class", () => {
-  describe("AddNodes", () => {
+  describe("addClientNode", () => {
     it("should add the connected node when new node connect", () => {
       // Given
       const ws = "node1";
@@ -55,7 +55,7 @@ describe("P2p Server Class", () => {
     });
   });
 
-  describe("DeleteNode", () => {
+  describe("deleteClientNode", () => {
     it("should delete node when node disconnect", () => {
       // Given
       p2pServer.clientNodes = [
@@ -82,7 +82,7 @@ describe("P2p Server Class", () => {
       expect(p2pServer.clientNodes).toEqual(expectedResult);
     });
 
-    it("should do nothing when the node to delete is already deleted", () => {
+    it("should do nothing when the node to delete is null", () => {
       // Given
       p2pServer.clientNodes = [
         // @ts-ignore
@@ -92,7 +92,7 @@ describe("P2p Server Class", () => {
       ];
 
       // @ts-ignore
-      const nodetoDelete = new Node("node2", "ws://localhost:6002");
+      const nodetoDelete = null;
 
       // When
       // @ts-ignore
@@ -134,6 +134,90 @@ describe("P2p Server Class", () => {
 
       // Then
       expect(result).toEqual([]);
+    });
+  });
+
+  describe("getNodeByWS", () => {
+    it("should return node when nodes list contain the looked for websocket", () => {
+      // Given
+      const nodeList = [
+        // @ts-ignore
+        new Node("node1", "ws://localhost:6001"),
+        // @ts-ignore
+        new Node("node2", "ws://localhost:6002"),
+      ];
+
+      const ws = "node2";
+
+      // When
+      // @ts-ignore
+      const result = p2pServer.getNodeByWS(nodeList, ws);
+
+      // Then
+      // @ts-ignore
+      expect(result).toEqual(new Node("node2", "ws://localhost:6002"));
+    });
+
+    it("should return null when nodes list does NOT contain the looked for websocket", () => {
+      // Given
+      const nodeList = [
+        // @ts-ignore
+        new Node("node1", "ws://localhost:6001"),
+        // @ts-ignore
+        new Node("node2", "ws://localhost:6002"),
+      ];
+
+      const ws = "notKnowNodeWS";
+
+      // When
+      // @ts-ignore
+      const result = p2pServer.getNodeByWS(nodeList, ws);
+
+      // Then
+      // @ts-ignore
+      expect(result).toEqual(null);
+    });
+  });
+
+  describe("getNodeByURL", () => {
+    it("should return node when nodes list contain the looked for node url", () => {
+      // Given
+      const nodeList = [
+        // @ts-ignore
+        new Node("node1", "ws://localhost:6001"),
+        // @ts-ignore
+        new Node("node2", "ws://localhost:6002"),
+      ];
+
+      const peerURL = "ws://localhost:6002";
+
+      // When
+      // @ts-ignore
+      const result = p2pServer.getNodeByURL(nodeList, peerURL);
+
+      // Then
+      // @ts-ignore
+      expect(result).toEqual(new Node("node2", "ws://localhost:6002"));
+    });
+
+    it("should return null when nodes list does NOT contain the looked for node url", () => {
+      // Given
+      const nodeList = [
+        // @ts-ignore
+        new Node("node1", "ws://localhost:6001"),
+        // @ts-ignore
+        new Node("node2", "ws://localhost:6002"),
+      ];
+
+      const peerURL = "notKnowNodeURL";
+
+      // When
+      // @ts-ignore
+      const result = p2pServer.getNodeByURL(nodeList, peerURL);
+
+      // Then
+      // @ts-ignore
+      expect(result).toEqual(null);
     });
   });
 });

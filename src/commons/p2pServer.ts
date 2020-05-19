@@ -28,7 +28,10 @@ export default class P2pServer {
   deleteClientNode(clientNode: Node | null): void {
     if (!clientNode) return;
 
-    this.clientNodes.splice(this.clientNodes.indexOf(clientNode), 1);
+    const index = this.clientNodes.findIndex(
+      (node: Node) => node.ws === clientNode.ws
+    );
+    this.clientNodes.splice(index, 1);
     console.log(`\n${clientNode.url} successfully removed from clients list.`);
   }
 
