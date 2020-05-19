@@ -20,17 +20,17 @@ describe("P2p Server Class", () => {
 
       // When
       // @ts-ignore
-      p2pServer.addNode(ws, req);
+      p2pServer.addClientNode(ws, req);
 
       // Then
       const expectedResult = [{ ws: "node1", url: "ws://localhost:6001" }];
-      expect(p2pServer.connectedNodes).toEqual(expectedResult);
+      expect(p2pServer.clientNodes).toEqual(expectedResult);
     });
 
     it("should NOT add the connected node when the same node connect but is already registered", () => {
       // Given
 
-      p2pServer.connectedNodes = [
+      p2pServer.clientNodes = [
         // @ts-ignore
         new Node("node1", "ws://localhost:6001"),
         // @ts-ignore
@@ -44,21 +44,21 @@ describe("P2p Server Class", () => {
 
       // When
       // @ts-ignore
-      p2pServer.addNode(ws, req);
+      p2pServer.addClientNode(ws, req);
 
       // Then
       const expectedResult = [
         { ws: "node1", url: "ws://localhost:6001" },
         { ws: "node2", url: "ws://localhost:6002" },
       ];
-      expect(p2pServer.connectedNodes).toEqual(expectedResult);
+      expect(p2pServer.clientNodes).toEqual(expectedResult);
     });
   });
 
   describe("DeleteNode", () => {
     it("should delete node when node disconnect", () => {
       // Given
-      p2pServer.connectedNodes = [
+      p2pServer.clientNodes = [
         // @ts-ignore
         new Node("node1", "ws://localhost:6001"),
         // @ts-ignore
@@ -68,50 +68,49 @@ describe("P2p Server Class", () => {
       ];
 
       // @ts-ignore
-      const ws = "node2";
+      const nodetoDelete = new Node("node2", "ws://localhost:6002");
 
       // When
       // @ts-ignore
-      p2pServer.deleteNode(ws);
+      p2pServer.deleteClientNode(nodetoDelete);
 
       // Then
       const expectedResult = [
         { ws: "node1", url: "ws://localhost:6001" },
         { ws: "node3", url: "ws://localhost:6003" },
       ];
-      expect(p2pServer.connectedNodes).toEqual(expectedResult);
+      expect(p2pServer.clientNodes).toEqual(expectedResult);
     });
 
     it("should do nothing when the node to delete is already deleted", () => {
       // Given
-      p2pServer.connectedNodes = [
+      p2pServer.clientNodes = [
         // @ts-ignore
         new Node("node1", "ws://localhost:6001"),
         // @ts-ignore
         new Node("node3", "ws://localhost:6003"),
       ];
 
-      const req = {
-        url: "ws://localhost:6002",
-      };
+      // @ts-ignore
+      const nodetoDelete = new Node("node2", "ws://localhost:6002");
 
       // When
       // @ts-ignore
-      p2pServer.deleteNode(req);
+      p2pServer.deleteClientNode(nodetoDelete);
 
       // Then
       const expectedResult = [
         { ws: "node1", url: "ws://localhost:6001" },
         { ws: "node3", url: "ws://localhost:6003" },
       ];
-      expect(p2pServer.connectedNodes).toEqual(expectedResult);
+      expect(p2pServer.clientNodes).toEqual(expectedResult);
     });
   });
 
   describe("getConnectedNodesURL", () => {
     it("should return empty array when connectedNodes is empty", () => {
       // Given
-      const connectedNodes = (p2pServer.connectedNodes = [
+      const connectedNodes = (p2pServer.clientNodes = [
         // @ts-ignore
         new Node("node1", "ws://localhost:6001"),
         // @ts-ignore
@@ -128,7 +127,7 @@ describe("P2p Server Class", () => {
 
     it("should return only url in an array when connectedNodes is NOT empty", () => {
       // Given
-      const connectedNodes = (p2pServer.connectedNodes = []);
+      const connectedNodes = (p2pServer.clientNodes = []);
 
       // Given
       const result = p2pServer.getConnectedNodesURL();

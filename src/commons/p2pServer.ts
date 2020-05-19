@@ -4,7 +4,7 @@ import Node from "./Node";
 export default class P2pServer {
   P2P_PORT!: number;
   server!: WebSocket.Server;
-  connectedNodes: Node[] = [];
+  clientNodes: Node[] = [];
 
   constructor(P2P_PORT: number) {
     this.P2P_PORT = P2P_PORT;
@@ -12,43 +12,38 @@ export default class P2pServer {
     console.log(`Listening P2P server on port : ${this.P2P_PORT}`);
   }
 
-  handleNodeClient(websocket: WebSocket) {
-    // Handle when client disconnect
-    websocket.on("close", () => this.deleteNode(websocket));
-  }
-
-  addNode(websocket: WebSocket, req: any): void {
+  addClientNode(websocket: WebSocket, req: any): void {
     const nodeUrl = this.getUrlFrom(req);
-    console.log(`${nodeUrl} connected to the server`);
+    console.log(`\nClient ${nodeUrl} connected to the server`);
 
-    if (this.connectedNodes.some((node: any) => node.url === nodeUrl)) {
+    if (this.clientNodes.some((node: any) => node.url === nodeUrl)) {
       console.log("Node already in the connected list. Do nothing.");
       return;
     }
 
-    console.log("Add new node to the connected list");
-    this.connectedNodes.push(new Node(websocket, nodeUrl));
+    this.clientNodes.push(new Node(websocket, nodeUrl));
+    console.log(`Client ${nodeUrl} successfully added to the clients list.`);
   }
 
-  deleteNode(websocket: WebSocket): void {
-    const nodeIndexToDelete = this.connectedNodes.findIndex(
-      (node: any) => node.ws === websocket
-    );
+  deleteClientNode(clientNode: Node | null): void {
+    if (!clientNode) return;
 
-    if (nodeIndexToDelete < 0) {
-      console.log("Node disconnected already deleted. Do nothing.");
-      return;
-    }
-
-    console.log(
-      `${this.connectedNodes[nodeIndexToDelete].url} disconnected. Delete it.`
-    );
-
-    this.connectedNodes.splice(nodeIndexToDelete, 1);
+    this.clientNodes.splice(this.clientNodes.indexOf(clientNode), 1);
+    console.log(`\n${clientNode.url} successfully removed from clients list.`);
   }
 
   getConnectedNodesURL() {
-    return this.connectedNodes.map((ws: any) => ws.url);
+    return this.clientNodes.map((ws: any) => ws.url);
+  }
+
+  getNodeByWS(nodes: Node[], ws: WebSocket): Node | null {
+    const index = nodes.findIndex((node: Node) => node.ws === ws);
+    return index < 0 ? null : nodes[index];
+  }
+
+  getNodeByURL(nodes: Node[], peerURL: string | null): Node | null {
+    const index = nodes.findIndex((node: Node) => node.url === peerURL);
+    return index < 0 ? null : nodes[index];
   }
 
   private getUrlFrom(req: any): string {

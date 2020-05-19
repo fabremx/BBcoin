@@ -7,9 +7,18 @@ export class WebSocketServer extends P2pServer {
     super(BROKER_WEBSOCKET_PORT);
 
     // When client connect to the broker
-    this.server.on("connection", (ws: WebSocket, req: any) => {
-      this.handleNodeClient(ws);
-      this.addNode(ws, req);
+    this.server.on("connection", (ws: WebSocket, req: any) =>
+      this.handleClientNode(ws, req)
+    );
+  }
+
+  handleClientNode(ws: WebSocket, req: any) {
+    this.addClientNode(ws, req);
+
+    // Handle when client disconnect
+    ws.on("close", () => {
+      const clientNode: any = this.getNodeByWS(this.clientNodes, ws);
+      this.deleteClientNode(clientNode);
     });
   }
 }

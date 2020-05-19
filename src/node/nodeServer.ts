@@ -10,7 +10,7 @@ declare var process: {
 };
 
 export class NodeServer extends P2pServer {
-  nodesConnectedTo: Node[] = [];
+  serverNodes: Node[] = [];
 
   constructor() {
     super(process.env.P2P_PORT || 6001);
@@ -21,28 +21,55 @@ export class NodeServer extends P2pServer {
     );
 
     // When someone connect to the server
-    this.server.on("connection", (ws: WebSocket, req: any) => {
-      this.handleNodeClient(ws);
-      this.addNode(ws, req);
-      // this.initConnection(ws)
-    });
+    this.server.on("connection", (ws: WebSocket, req: any) =>
+      this.handleClientNode(ws, req)
+    );
   }
 
   connectToPeers(peers: string[]) {
     const peersToConnect = this.removeUselessConnection(peers);
 
     peersToConnect.forEach((peerURL: string) => {
-      console.log(`Tying to connect to: ${peerURL}`);
+      console.log(`Tying to connect to: ${peerURL} ...`);
 
       const ws: WebSocket = new WebSocket(
         `${peerURL}?nodePort=${this.P2P_PORT}`
       );
-      ws.on("open", () => {
-        this.nodesConnectedTo.push(new Node(ws, peerURL));
-        console.log(`Successfully connected to ${peerURL}`);
-      });
-      ws.on("error", () => console.log(`Connection failed with ${peerURL}`));
+
+      this.handleServerNode(ws, peerURL);
     });
+  }
+
+  handleClientNode(ws: WebSocket, req: any) {
+    this.addClientNode(ws, req);
+
+    // Handle when client disconnect
+    ws.on("close", () => {
+      const nodes = this.getClientAndServerNodeFrom(ws);
+
+      console.log(`\nClient ${nodes.client.url} disconnected\n`);
+
+      this.deleteClientNode(nodes.client);
+      this.deleteServerNode(nodes.server);
+    });
+  }
+
+  handleServerNode(ws: WebSocket, peerURL: string): void {
+    ws.on("open", () => {
+      this.serverNodes.push(new Node(ws, peerURL));
+      console.log(
+        `Connection succeed: ${peerURL} successfully added to the server list.`
+      );
+    });
+
+    ws.on("error", () => console.log(`Connection failed with ${peerURL}`));
+  }
+
+  deleteServerNode(serverNode: Node): void {
+    if (!serverNode) return;
+
+    this.serverNodes.splice(this.serverNodes.indexOf(serverNode), 1);
+    console.log(`\n${serverNode.url} successfully removed from servers list`);
   }
 
   // initConnection(ws: WebSocket): void {
@@ -72,11 +99,11 @@ export class NodeServer extends P2pServer {
   }
 
   broadcast(message: any): void {
-    this.connectedNodes.forEach((node: Node) => this.write(node.ws, message));
+    this.clientNodes.forEach((node: Node) => this.write(node.ws, message));
   }
 
   getNodesConnectedToURL(): string[] {
-    return this.nodesConnectedTo.map((ws: any) => ws.url);
+    return this.serverNodes.map((ws: any) => ws.url);
   }
 
   private removeUselessConnection(peers: string[]): string[] {
@@ -102,6 +129,19 @@ export class NodeServer extends P2pServer {
 
     peersTemp.splice(index, 1);
     return peersTemp;
+  }
+
+  private getClientAndServerNodeFrom(ws: WebSocket): any {
+    const client: Node | null = this.getNodeByWS(this.clientNodes, ws);
+    const server: Node | null = this.getNodeByURL(
+      this.serverNodes,
+      client && client.url
+    );
+
+    return {
+      client,
+      server,
+    };
   }
 }
 

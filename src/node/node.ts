@@ -42,7 +42,7 @@ class Node {
       console.log("\nlooking for peers...");
       const peers: string[] = await this.getPeers();
 
-      console.log("All peers connected: ", peers);
+      console.log("All peers connected: ", peers, "\n");
       this.nodeServer.connectToPeers(peers);
     }, INTERVAL_RETRIEVE_PEERS);
   }
