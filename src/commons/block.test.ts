@@ -1,17 +1,17 @@
+import { Transaction } from "./transaction";
 import { Block } from "./block";
 
 jest.spyOn(console, "log").mockImplementation();
 
 describe("Block Class", () => {
-  const index = 1;
-  const previousHash = "previousHash";
   const timestamp = 0;
-  const data = "data";
+  const previousHash = "previousHash";
+  const transactions = [new Transaction("fromAddress", "toAddress", 100)];
 
   describe("calculateHash", () => {
     it("should call sha256 method with all block param", () => {
       // Given
-      const block = new Block(index, previousHash, timestamp, data);
+      const block = new Block(timestamp, transactions, previousHash);
 
       // When
       const result = block.calculateHash();
@@ -25,7 +25,7 @@ describe("Block Class", () => {
   describe("mineBlock", () => {
     it("should return the hash with nonce equal to 0 when difficulty equal to 0", () => {
       // Given
-      const block = new Block(index, previousHash, timestamp, data);
+      const block = new Block(timestamp, transactions, previousHash);
       const difficulty = 0;
 
       // When
@@ -37,7 +37,7 @@ describe("Block Class", () => {
 
     it("should return the hash with nonce equal to 0 when block hash is have two 0 at the beginning and difficulty is equal to 2", () => {
       // Given
-      const block = new Block(index, previousHash, timestamp, data);
+      const block = new Block(timestamp, transactions, previousHash);
       block.hash = "00hash";
       const difficulty = 2;
 

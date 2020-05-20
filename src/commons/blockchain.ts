@@ -1,8 +1,11 @@
+import { Transaction } from "./transaction";
 import { Block } from "./block";
 
 export class Blockchain {
   public blockchain: Block[] = [];
   difficulty: number = 2;
+  pendingTransactions: Transaction[] = [];
+  miningReward: number = 100;
 
   constructor() {
     this.blockchain.push(this.getGenesisBlock());
@@ -13,24 +16,20 @@ export class Blockchain {
   }
 
   getGenesisBlock(): Block {
-    const index = 0;
+    const timestamp = 0;
+    const genesisData = [new Transaction(null, null, 0)];
     const previousHash = "0";
-    const timestamp = 1465154705;
-    const data = "Genesis block";
 
-    return new Block(index, previousHash, timestamp, data);
+    return new Block(timestamp, genesisData, previousHash);
   }
 
-  generateNextBlock(newBlockData: any): Block {
-    const previousBlock: Block = this.getLatestBlock();
-    const newBlockIndex = previousBlock.index + 1;
+  generateNextBlock(newBlockTransaction: Transaction[]): Block {
     const newBlockTimestamp = new Date().getTime();
 
     return new Block(
-      newBlockIndex,
-      previousBlock.hash,
       newBlockTimestamp,
-      newBlockData
+      newBlockTransaction,
+      this.getLatestBlock().hash
     );
   }
 
@@ -38,11 +37,24 @@ export class Blockchain {
     return this.blockchain[this.blockchain.length - 1];
   }
 
+  createTransaction(transaction: Transaction) {
+    this.pendingTransactions.push(transaction);
+  }
+
+  minePendingTransactions(miningRewardAddress: string) {
+    const block = new Block(Date.now(), this.pendingTransactions);
+
+    block.mineBlock(this.difficulty);
+    this.blockchain.push(block);
+
+    // Reset the pending transactions and send the mining reward
+    this.pendingTransactions = [
+      new Transaction(null, miningRewardAddress, this.miningReward),
+    ];
+  }
+
   isNewBlockValid(previousBlock: Block, newBlock: Block): Boolean {
-    if (previousBlock.index + 1 !== newBlock.index) {
-      console.error("Block Invalid: invalid index");
-      return false;
-    } else if (previousBlock.hash !== newBlock.previousHash) {
+    if (previousBlock.hash !== newBlock.previousHash) {
       console.error("Block Invalid: invalid previous hash");
       return false;
     } else if (newBlock.hash !== newBlock.calculateHash()) {
@@ -88,6 +100,24 @@ export class Blockchain {
 
     console.log("Replace blockchain with the new one");
     return this.blockchain;
+  }
+
+  getBalanceOfAddress(walletAddress: string) {
+    let balance = 0;
+
+    for (const block of this.blockchain) {
+      for (const transaction of block.transactions) {
+        if (transaction.fromAddress === walletAddress) {
+          balance -= transaction.amount;
+        }
+
+        if (transaction.toAddress === walletAddress) {
+          balance += transaction.amount;
+        }
+      }
+    }
+
+    return balance;
   }
 }
 

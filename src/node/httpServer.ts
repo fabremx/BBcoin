@@ -25,8 +25,7 @@ class NodeHttpServer extends HttpServer {
     });
 
     this.server.post("/addBlock", (req, res) => {
-      var newBlock = Blockchain.generateNextBlock(req.body.data);
-
+      const newBlock = Blockchain.generateNextBlock(req.body.data);
       //   this.blockchainService.addBlock(newBlock);
 
       NodeServer.broadcast("message");
