@@ -19,3 +19,41 @@
   border: 1px solid black;
   text-align: center;
 }
+
+.blockchain__block__container {
+  position: relative;
+  width: 240px;
+}
+
+.blockchain__container {
+  display: flex;
+}
+
+.blockchain__block {
+  width: 185px;
+  padding: 5px 10px;
+  border: 1px solid black;
+}
+
+.blockchain__block div {
+  display: flex;
+}
+
+.blockchain__block--prop {
+  font-weight: 500;
+}
+
+.blockchain__block--value {
+  margin-left: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.blockchain__arrow {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  border-top: 3px solid black;
+  width: 34px;
+}

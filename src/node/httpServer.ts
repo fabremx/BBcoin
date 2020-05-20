@@ -19,9 +19,13 @@ class NodeHttpServer extends HttpServer {
       const nodeInfo = {
         clients: NodeServer.getClientNodesURL(),
         servers: NodeServer.getServerNodesRL(),
-        Blockchain: Blockchain.blockchain,
       };
+
       res.status(200).send(JSON.stringify(nodeInfo));
+    });
+
+    this.server.get("/blockchain", (req, res) => {
+      res.status(200).send(JSON.stringify(Blockchain.blockchain));
     });
 
     this.server.post("/addBlock", (req, res) => {
