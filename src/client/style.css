@@ -1,0 +1,21 @@
+.globalInfo--number {
+  font-size: 19px;
+  font-weight: 800;
+  margin-left: 7px;
+}
+
+.nodeInfo__container {
+  display: flex;
+}
+
+.nodeInfo__table {
+  max-width: 400px;
+  margin-right: 20px;
+  border-collapse: collapse;
+}
+
+.nodeInfo__table td {
+  padding: 5px 10px;
+  border: 1px solid black;
+  text-align: center;
+}

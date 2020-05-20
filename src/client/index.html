@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Blockhain monitoring</title>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div v-if="loader">
+        <p>Loading...</p>
+      </div>
+
+      <div v-else>
+        <h2>Blockchain network information</h2>
+        <p>
+          Noeud présent sur le réseaux:
+          <span class="globalInfo--number">{{ nodesInfo.length }}</span>
+        </p>
+
+        <div class="nodeInfo__container">
+          <table
+            v-for="(node, index) in nodesInfo"
+            :key="node.url"
+            class="nodeInfo__table"
+          >
+            <tr class="nodeInfo__table--firstLine">
+              <td colspan="2">Node {{ index + 1 }}</td>
+            </tr>
+            <tr>
+              <td>URL</td>
+              <td>{{ node.url }}</td>
+            </tr>
+            <tr>
+              <td>Clients</td>
+              <td>{{ node.clients.join(', ') }}</td>
+            </tr>
+            <tr>
+              <td>Servers</td>
+              <td>{{ node.servers.join(', ') }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <h2>Blockchain state</h2>
+        {{ blockchain }}
+        <table>
+          <tr>
+            <td v-for="(block, index) in blockchain" :key="block.hash">
+              timestamp: {{ block.timestamp }} previousHash: {{
+              block.previousHash }} hash: {{ block.hash }} nonce: {{ block.nonce
+              }}
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <script type="module">
+      import {
+        getNodesConnectedOnNetwork,
+        getNodesInfo,
+        asyncForEach,
+      } from "./utils.js";
+
+      new Vue({
+        el: "#app",
+        data: {
+          loader: true,
+          nodesInfo: [],
+          blockchain: [],
+        },
+        created() {
+          this.loadNodesInfo();
+        },
+        methods: {
+          loadNodesInfo: async function () {
+            const nodesConnectedOnNetwork = await getNodesConnectedOnNetwork();
+            console.log("nodesConnectedOnNetwork", nodesConnectedOnNetwork);
+
+            const nodesInfo = [];
+            await asyncForEach(nodesConnectedOnNetwork, async (nodeUrl) => {
+              const nodeInfo = await getNodesInfo(nodeUrl);
+              nodesInfo.push({ url: nodeUrl, ...nodeInfo });
+            });
+
+            console.log("nodesInfo", nodesInfo);
+            this.loader = false;
+            this.nodesInfo = nodesInfo;
+            this.blockchain = this.nodeInfo[0].Blockchain;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
