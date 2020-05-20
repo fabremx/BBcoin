@@ -14,24 +14,16 @@ export class NodeServer extends P2pServer {
 
   constructor() {
     super(process.env.P2P_PORT || 6001);
-    this.handleBrokerConnection();
+
+    // Connect to the broker server
+    new WebSocket(
+      `ws://localhost:${BROKER_WEBSOCKET_PORT}?nodePort=${this.P2P_PORT}`
+    );
 
     // When someone connect to the server
     this.server.on("connection", (ws: WebSocket, req: any) =>
       this.handleClientNode(ws, req)
     );
-  }
-
-  handleBrokerConnection() {
-    // Connect to the broker server
-    const brokerWs = new WebSocket(
-      `ws://localhost:${BROKER_WEBSOCKET_PORT}?nodePort=${this.P2P_PORT}`
-    );
-
-    brokerWs.on("close", () => {
-      console.log("connexion with the broker interrupted. Closing the node...");
-      global.process.exit(1);
-    });
   }
 
   connectToPeers(peers: string[]) {
@@ -110,7 +102,7 @@ export class NodeServer extends P2pServer {
     this.clientNodes.forEach((node: Node) => this.write(node.ws, message));
   }
 
-  getNodesConnectedToURL(): string[] {
+  getServerNodesRL(): string[] {
     return this.serverNodes.map((ws: any) => ws.url);
   }
 
@@ -122,7 +114,7 @@ export class NodeServer extends P2pServer {
   }
 
   private removeNodesAlreadyConnected(peers: string[]): string[] {
-    const nodesConnectionURL = this.getNodesConnectedToURL();
+    const nodesConnectionURL = this.getServerNodesRL();
 
     return peers.filter((x) => !nodesConnectionURL.includes(x));
   }

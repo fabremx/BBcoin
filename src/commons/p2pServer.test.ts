@@ -118,7 +118,7 @@ describe("P2p Server Class", () => {
       ]);
 
       // Given
-      const result = p2pServer.getConnectedNodesURL();
+      const result = p2pServer.getClientNodesURL();
 
       // Then
       const expectedResult = ["ws://localhost:6001", "ws://localhost:6003"];
@@ -130,7 +130,7 @@ describe("P2p Server Class", () => {
       const connectedNodes = (p2pServer.clientNodes = []);
 
       // Given
-      const result = p2pServer.getConnectedNodesURL();
+      const result = p2pServer.getClientNodesURL();
 
       // Then
       expect(result).toEqual([]);

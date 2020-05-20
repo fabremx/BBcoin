@@ -15,18 +15,24 @@ class NodeHttpServer extends HttpServer {
   }
 
   setNodeRoutes(): void {
-    this.server.get("/blocks", (req, res) => {
-      res.status(200).send(JSON.stringify(Blockchain.blockchain));
+    this.server.get("/infos", (req, res) => {
+      const nodeInfo = {
+        clients: NodeServer.getClientNodesURL(),
+        servers: NodeServer.getServerNodesRL(),
+        Blockchain: Blockchain.blockchain,
+      };
+      res.status(200).send(JSON.stringify(nodeInfo));
     });
 
-    this.server.get("/peers", (req, res) => {
-      const connectedNodes = NodeServer.getConnectedNodesURL();
-      res.status(200).send(JSON.stringify(connectedNodes));
-    });
+    this.server.post("/addBlock", (req, res) => {
+      var newBlock = Blockchain.generateNextBlock(req.body.data);
 
-    this.server.get("/connectedTo", (req, res) => {
-      const nodesConnectedTo = NodeServer.getNodesConnectedToURL();
-      res.status(200).send(JSON.stringify(nodesConnectedTo));
+      //   this.blockchainService.addBlock(newBlock);
+
+      NodeServer.broadcast("message");
+
+      console.log("block ajouté : " + JSON.stringify(newBlock));
+      res.send();
     });
 
     this.server.post("/mineBlock", (req, res) => {

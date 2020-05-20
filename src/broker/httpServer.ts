@@ -10,7 +10,7 @@ class BrokerHttpServer extends HttpServer {
 
   setBorkerRoutes(): void {
     this.server.get("/getNodes", (req, res) => {
-      const wsUrlConnected = webScoketServer.getConnectedNodesURL();
+      const wsUrlConnected = webScoketServer.getClientNodesURL();
       res.status(200).send(JSON.stringify({ peers: wsUrlConnected }));
     });
   }

@@ -35,7 +35,7 @@ export default class P2pServer {
     console.log(`\n${clientNode.url} successfully removed from clients list.`);
   }
 
-  getConnectedNodesURL() {
+  getClientNodesURL() {
     return this.clientNodes.map((ws: any) => ws.url);
   }
 

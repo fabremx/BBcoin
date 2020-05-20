@@ -1,8 +1,8 @@
 import { Block } from "./block";
-import sha256 from "crypto-js/sha256";
 
 export class Blockchain {
   public blockchain: Block[] = [];
+  difficulty: number = 2;
 
   constructor() {
     this.blockchain.push(this.getGenesisBlock());
@@ -17,43 +17,25 @@ export class Blockchain {
     const previousHash = "0";
     const timestamp = 1465154705;
     const data = "Genesis block";
-    const hash = sha256(index + previousHash + timestamp + data).toString();
 
-    return new Block(index, previousHash, timestamp, data, hash);
-  }
-
-  calculateHash(
-    index: number,
-    previousHash: string,
-    timestamp: number,
-    data: any
-  ) {
-    return sha256(index + previousHash + timestamp + data).toString();
+    return new Block(index, previousHash, timestamp, data);
   }
 
   generateNextBlock(newBlockData: any): Block {
     const previousBlock: Block = this.getLatestBlock();
     const newBlockIndex = previousBlock.index + 1;
     const newBlockTimestamp = new Date().getTime();
-    const newBlockHash = this.calculateHash(
-      newBlockIndex,
-      previousBlock.hash,
-      newBlockTimestamp,
-      newBlockData
-    );
 
     return new Block(
       newBlockIndex,
       previousBlock.hash,
       newBlockTimestamp,
-      newBlockData,
-      newBlockHash
+      newBlockData
     );
   }
 
   getLatestBlock(): Block {
-    const length = this.blockchain.length;
-    return this.blockchain[length - 1];
+    return this.blockchain[this.blockchain.length - 1];
   }
 
   isNewBlockValid(previousBlock: Block, newBlock: Block): Boolean {
@@ -63,15 +45,7 @@ export class Blockchain {
     } else if (previousBlock.hash !== newBlock.previousHash) {
       console.error("Block Invalid: invalid previous hash");
       return false;
-    } else if (
-      newBlock.hash !==
-      this.calculateHash(
-        newBlock.index,
-        newBlock.previousHash,
-        newBlock.timestamp,
-        newBlock.data
-      )
-    ) {
+    } else if (newBlock.hash !== newBlock.calculateHash()) {
       console.error("Block Invalid: invalid hash");
       return false;
     }
