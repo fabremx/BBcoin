@@ -76,26 +76,65 @@
               </div>
             </div>
 
-            <div class="blockchain__arrow"></div>
+            <div
+              v-if="index !== blockchain.length - 1"
+              class="blockchain__arrow"
+            ></div>
           </div>
+        </div>
+
+        <h2>My Wallet</h2>
+          <div class="wallet__amount">
+            <p>
+              Coin présent sur le portefeuille:
+              <span class="wallet__amount--number">{{ walletAmount }}</span>
+            </p>
+          </div>
+        </div>
+
+        <h2>Transaction</h2>
+        <div>
+          <select v-model="selectedFromAddress">
+            <option disabled value="">Choisissez</option>
+            <option>{{ myWalletAddress }}</option>
+            <option>Wallet 2</option>
+            <option>Wallet 3</option>
+          </select>
+
+          <select v-model="selectedToAddress">
+            <option disabled value="">Choisissez</option>
+            <option>{{ myWalletAddress }}</option>
+            <option>Wallet 2</option>
+            <option>Wallet 3</option>
+          </select>
+
+          <input v-model.number="amount" placeholder="Amount" type="number" />
+
+          <button v-on:click="createNewTransaction()">
+            Ajouter
+          </button>
         </div>
       </div>
     </div>
 
     <script type="module">
-      import {
-        getNodesConnectedOnNetwork,
-        getNodesInfoFrom,
-        getBlockchainFrom,
-        asyncForEach,
-      } from "./utils.js";
+      import * as utils from "./utils.js";
 
       new Vue({
         el: "#app",
         data: {
           loader: true,
+          walletAmount: null,
           nodesInfo: [],
           blockchain: [],
+          amount: "",
+          selectedFromAddress: "",
+          selectedToAddress: "",
+          myWalletAddress: 'myWallet',
+          key: {
+            privateKey: '',
+            publicKey: ''
+          }
         },
         async created() {
           this.nodesInfo = await this.getNodesInfo();
@@ -118,23 +157,38 @@
             );
           }
 
+          this.walletAmount = await utils.getAmmountWallet(
+            this.myWalletAddress
+          );
           this.loader = false;
         },
         methods: {
           getNodesInfo: async function () {
-            const nodesConnectedOnNetwork = await getNodesConnectedOnNetwork();
+            const nodesConnectedOnNetwork = await utils.getNodesConnectedOnNetwork();
             console.log("nodesConnectedOnNetwork", nodesConnectedOnNetwork);
 
             const nodesInfo = [];
-            await asyncForEach(nodesConnectedOnNetwork, async (nodeUrl) => {
-              const nodeInfo = await getNodesInfoFrom(nodeUrl);
-              nodesInfo.push({ url: nodeUrl, ...nodeInfo });
-            });
+            await utils.asyncForEach(
+              nodesConnectedOnNetwork,
+              async (nodeUrl) => {
+                const nodeInfo = await utils.getNodesInfo(nodeUrl);
+                nodesInfo.push({ url: nodeUrl, ...nodeInfo });
+              }
+            );
 
             return nodesInfo;
           },
           getBlockchain: async function (nodeUrl) {
-            return await getBlockchainFrom(nodeUrl);
+            return await utils.getBlockchain(nodeUrl);
+          },
+          createNewTransaction: function () {
+            console.log(
+              this.selectedFromAddress,
+              this.selectedToAddress,
+              this.amount
+            );
+            
+            utils.createNewTransaction(this.selectedFromAddress, this.selectedToAddress, this.amount);
           },
         },
       });

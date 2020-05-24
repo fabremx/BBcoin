@@ -1,6 +1,7 @@
 import HttpServer from "../commons/httpServer";
 import NodeServer from "../node/nodeServer";
 import Blockchain from "../commons/blockchain";
+import { Transaction } from "../commons/transaction";
 
 declare var process: {
   env: {
@@ -28,13 +29,23 @@ class NodeHttpServer extends HttpServer {
       res.status(200).send(JSON.stringify(Blockchain.blockchain));
     });
 
+    this.server.get("/wallet/:walletId", (req, res) => {
+      const walletId = req.params.id;
+      const amountWAllet = Blockchain.getBalanceOfAddress(walletId);
+
+      res.status(200).send(JSON.stringify(amountWAllet));
+    });
+
     this.server.post("/addBlock", (req, res) => {
-      const newBlock = Blockchain.generateNextBlock(req.body.data);
-      //   this.blockchainService.addBlock(newBlock);
+      const { transaction } = req.body;
+      console.log("***************", transaction);
 
-      NodeServer.broadcast("message");
+      // const newBlock = Blockchain.generateNextBlock(req.body.data);
+      // //   this.blockchainService.addBlock(newBlock);
 
-      console.log("block ajouté : " + JSON.stringify(newBlock));
+      // NodeServer.broadcast("message");
+
+      // console.log("block ajouté : " + JSON.stringify(newBlock));
       res.send();
     });
 

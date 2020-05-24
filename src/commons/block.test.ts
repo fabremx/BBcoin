@@ -49,4 +49,37 @@ describe("Block Class", () => {
       expect(block.nonce).toEqual(0);
     });
   });
+
+  describe("hasValidTransactions", () => {
+    it("should return true when all transaction are valid", () => {
+      // Given
+      const block = new Block(timestamp, transactions, previousHash);
+      transactions[0].isValid = jest.fn().mockReturnValue(true);
+
+      // When
+      const result = block.hasValidTransactions();
+
+      // Then
+      expect(result).toEqual(true);
+    });
+
+    it("should return true when one of transactions is invalid", () => {
+      // Given
+      const transactions = [
+        new Transaction("fromAddress", "toAddress", 100),
+        new Transaction("fromAddress", "toAddress", 100),
+        new Transaction("fromAddress", "toAddress", 100),
+      ];
+      const block = new Block(timestamp, transactions, previousHash);
+      transactions[0].isValid = jest.fn().mockReturnValue(true);
+      transactions[1].isValid = jest.fn().mockReturnValue(false);
+      transactions[2].isValid = jest.fn().mockReturnValue(true);
+
+      // When
+      const result = block.hasValidTransactions();
+
+      // Then
+      expect(result).toEqual(false);
+    });
+  });
 });

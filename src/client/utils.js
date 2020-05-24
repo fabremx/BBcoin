@@ -1,3 +1,6 @@
+const WALLET_PLATFORM_NODE_URL = "http://localhost:3001";
+const MY_NODE_URL = "http://localhost:3002";
+
 function getPortFromUrl(nodeUrl) {
   return (parseInt(nodeUrl.split(":")[2]) - 3000).toString();
 }
@@ -14,12 +17,35 @@ export async function getNodesConnectedOnNetwork() {
   }
 }
 
-export async function getBlockchainFrom(nodeUrl) {
+export async function getBlockchain(nodeUrl) {
   try {
     const nodePort = getPortFromUrl(nodeUrl);
 
+    const response = await fetch(`http://localhost:${nodePort}/blockchain`);
+
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+export async function getNodesInfo(nodeUrl) {
+  try {
+    const nodePort = getPortFromUrl(nodeUrl);
+    const response = await fetch(`http://localhost:${nodePort}/infos`);
+
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+export async function getAmmountWallet(walletId) {
+  try {
     const response = await fetch(
-      `http://localhost:${nodePort}/blockchain`
+      `${WALLET_PLATFORM_NODE_URL}/wallet/${walletId}`
     );
 
     return await response.json();
@@ -29,12 +55,21 @@ export async function getBlockchainFrom(nodeUrl) {
   }
 }
 
-export async function getNodesInfoFrom(nodeUrl) {
+export async function createNewTransaction(walletFrom, walletTo, amount, keys) {
   try {
-    const nodePort = getPortFromUrl(nodeUrl);
-    const response = await fetch(
-      `http://localhost:${nodePort}/infos`
-    );
+    const response = await fetch(`${WALLET_PLATFORM_NODE_URL}/addBlock`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        walletFrom,
+        walletTo,
+        amount,
+        keys,
+      }),
+    });
 
     return await response.json();
   } catch (error) {

@@ -1,6 +1,6 @@
 import { Transaction } from "./transaction";
-import Blockchain from "./blockchain";
 import { Block } from "./block";
+import Blockchain from "./blockchain";
 
 const MOCKED_TIMESTAMP = 2020;
 jest.spyOn(console, "error").mockImplementation();
@@ -15,8 +15,62 @@ const MOCEKD_TRANSACTIONS = [new Transaction("fromAddress", "toAddress", 100)];
 describe("Blockchain Class", () => {
   it("should initial the blockchain with the correct genesis block when blockchain is instenciate", () => {
     // Then
-    const expectedResult = new Block(0, [new Transaction(null, null, 0)], "0");
+    const expectedResult = new Block(
+      0,
+      [new Transaction("null", "null", 0)],
+      "0"
+    );
     expect(Blockchain.blockchain).toEqual([expectedResult]);
+  });
+
+  describe("createTransaction", () => {
+    it("should throw an error when fromAddress is null, undefined or empty", () => {
+      // Given
+      const transaction = new Transaction("", "addressTo", 10);
+
+      // When
+      try {
+        Blockchain.createTransaction(transaction);
+      } catch (error) {
+        expect(error).toBeDefined();
+      }
+    });
+
+    it("should throw an error when toAddress is null, undefined or empty", () => {
+      // Given
+      const transaction = new Transaction("fromAddress", "", 10);
+
+      // When
+      try {
+        Blockchain.createTransaction(transaction);
+      } catch (error) {
+        expect(error).toBeDefined();
+      }
+    });
+
+    it("should throw an error when transaction is not valid", () => {
+      // Given
+      const transaction = new Transaction("fromAddress", "addressTo", 10);
+      transaction.isValid = jest.fn().mockReturnValue(false);
+
+      // When
+      try {
+        Blockchain.createTransaction(transaction);
+      } catch (error) {
+        expect(error).toBeDefined();
+      }
+    });
+
+    it("should add the new transaction to the pending transactions array when transaction is correct", () => {
+      // Given
+      const transaction = new Transaction("fromAddress", "addressTo", 10);
+      transaction.isValid = jest.fn().mockReturnValue(true);
+
+      // When
+      expect(Blockchain.pendingTransactions).toEqual([]);
+      Blockchain.createTransaction(transaction);
+      expect(Blockchain.pendingTransactions).toEqual([transaction]);
+    });
   });
 
   describe("getLatestBlock", () => {
@@ -150,7 +204,7 @@ describe("Blockchain Class", () => {
       expect(isValid).toBe(false);
     });
 
-    it("should return false when one of blockchain block is invalid", () => {
+    it("should return false when the previous hash is invalid", () => {
       // Given
       const genesisBlock = Blockchain.getGenesisBlock();
       const firstBlock = new Block(
@@ -164,6 +218,33 @@ describe("Blockchain Class", () => {
         "wrong previous hash"
       );
 
+      const blockchain = [genesisBlock, firstBlock, invalidSecondBlock];
+
+      // When
+      const isValid = Blockchain.isBlockchainValid(blockchain);
+
+      // Then
+      expect(isValid).toBe(false);
+    });
+
+    it("should return false when the transaction is invalid", () => {
+      // Given
+      const genesisBlock = Blockchain.getGenesisBlock();
+      const firstBlock = new Block(
+        MOCKED_TIMESTAMP,
+        MOCEKD_TRANSACTIONS,
+        MOCKED_PREVIOUS_HASH
+      );
+      const invalidSecondBlock = new Block(
+        MOCKED_TIMESTAMP,
+        MOCEKD_TRANSACTIONS,
+        firstBlock.hash
+      );
+
+      firstBlock.hasValidTransactions = jest.fn().mockReturnValue(true);
+      invalidSecondBlock.hasValidTransactions = jest
+        .fn()
+        .mockReturnValue(false);
       const blockchain = [genesisBlock, firstBlock, invalidSecondBlock];
 
       // When
@@ -191,6 +272,10 @@ describe("Blockchain Class", () => {
         MOCEKD_TRANSACTIONS,
         secondBlock.hash
       );
+
+      firstBlock.hasValidTransactions = jest.fn().mockReturnValue(true);
+      secondBlock.hasValidTransactions = jest.fn().mockReturnValue(true);
+      thridBlock.hasValidTransactions = jest.fn().mockReturnValue(true);
 
       const blockchain = [genesisBlock, firstBlock, secondBlock, thridBlock];
 
@@ -247,6 +332,9 @@ describe("Blockchain Class", () => {
         MOCEKD_TRANSACTIONS,
         firstBlock.hash
       );
+
+      firstBlock.hasValidTransactions = jest.fn().mockReturnValue(true);
+      secondBlock.hasValidTransactions = jest.fn().mockReturnValue(true);
 
       Blockchain.blockchain = [genesisBlock, firstBlock];
       const newBlockchain = [...Blockchain.blockchain, secondBlock];
