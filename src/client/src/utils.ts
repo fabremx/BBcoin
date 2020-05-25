@@ -1,6 +1,12 @@
 import { Block } from "../../commons/block";
-
-const WALLET_PLATFORM_NODE_URL = "http://localhost:3001";
+import { Transaction } from "@/commons/transaction";
+import {
+  BROKER_GET_NODES_INFO_URL,
+  WALLET_PLATFORM_GET_BLOCKCHAIN_URL,
+  WALLET_PLATFORM_GET_AMOUNT_WALLET_URL,
+  WALLET_PLATFORM_ADD_TRANSACTION_URL,
+  HTTP_URL_BASE
+} from "../../config/env";
 
 function getPortFromUrl(nodeUrl: string): string {
   return (parseInt(nodeUrl.split(":")[2]) - 3000).toString();
@@ -8,7 +14,7 @@ function getPortFromUrl(nodeUrl: string): string {
 
 export async function getNodesConnectedOnNetwork(): Promise<string[] | null> {
   try {
-    const response = await fetch(`http://localhost:3000/getNodes`);
+    const response = await fetch(BROKER_GET_NODES_INFO_URL);
 
     const result = await response.json();
     return result.peers || [];
@@ -18,11 +24,9 @@ export async function getNodesConnectedOnNetwork(): Promise<string[] | null> {
   }
 }
 
-export async function getBlockchain(nodeUrl: string): Promise<Block[]> {
+export async function getBlockchain(): Promise<Block[]> {
   try {
-    const nodePort = getPortFromUrl(nodeUrl);
-
-    const response = await fetch(`http://localhost:${nodePort}/blockchain`);
+    const response = await fetch(WALLET_PLATFORM_GET_BLOCKCHAIN_URL);
 
     return await response.json();
   } catch (error) {
@@ -34,7 +38,7 @@ export async function getBlockchain(nodeUrl: string): Promise<Block[]> {
 export async function getNodesInfo(nodeUrl: string): Promise<object | null> {
   try {
     const nodePort = getPortFromUrl(nodeUrl);
-    const response = await fetch(`http://localhost:${nodePort}/infos`);
+    const response = await fetch(`${HTTP_URL_BASE}:${nodePort}/infos`);
 
     return await response.json();
   } catch (error) {
@@ -48,7 +52,7 @@ export async function getAmmountWallet(
 ): Promise<number | null> {
   try {
     const response = await fetch(
-      `${WALLET_PLATFORM_NODE_URL}/wallet/${walletAddress}`
+      `${WALLET_PLATFORM_GET_AMOUNT_WALLET_URL}/${walletAddress}`
     );
 
     return await response.json();
@@ -58,23 +62,15 @@ export async function getAmmountWallet(
   }
 }
 
-export async function createNewTransaction(
-  walletFrom: string,
-  walletTo: string,
-  amount: number
-) {
+export async function createNewTransaction(transaction: Transaction) {
   try {
-    const response = await fetch(`${WALLET_PLATFORM_NODE_URL}/addBlock`, {
+    const response = await fetch(WALLET_PLATFORM_ADD_TRANSACTION_URL, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        walletFrom,
-        walletTo,
-        amount
-      })
+      body: JSON.stringify({ transaction })
     });
 
     return await response.json();

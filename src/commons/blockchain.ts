@@ -11,10 +11,6 @@ export class Blockchain {
     this.blockchain.push(this.getGenesisBlock());
   }
 
-  displayBlockchain() {
-    console.log(this.blockchain);
-  }
-
   getGenesisBlock(): Block {
     const timestamp = 0;
     const genesisData = [new Transaction("null", "null", 0)];
@@ -37,13 +33,23 @@ export class Blockchain {
     return this.blockchain[this.blockchain.length - 1];
   }
 
-  createTransaction(transaction: Transaction) {
+  addTransaction(transaction: Transaction): void {
     if (!transaction.fromAddress || !transaction.toAddress) {
       throw new Error("Transaction must include from and to address");
     }
 
     if (!transaction.isValid()) {
       throw new Error("Cannot add invalid transaction to chain");
+    }
+
+    if (transaction.amount <= 0) {
+      throw new Error("Transaction amount should be higher than 0");
+    }
+
+    if (
+      this.getBalanceOfAddress(transaction.fromAddress) < transaction.amount
+    ) {
+      throw new Error("Not enough balance");
     }
 
     this.pendingTransactions.push(transaction);
@@ -57,7 +63,7 @@ export class Blockchain {
 
     // Reset the pending transactions and send the mining reward
     this.pendingTransactions = [
-      new Transaction("null", miningRewardAddress, this.miningReward),
+      new Transaction("null", miningRewardAddress, this.miningReward)
     ];
   }
 
@@ -117,7 +123,7 @@ export class Blockchain {
     return this.blockchain;
   }
 
-  getBalanceOfAddress(walletAddress: string) {
+  getBalanceOfAddress(walletAddress: string): number {
     let balance = 0;
 
     for (const block of this.blockchain) {
@@ -133,6 +139,23 @@ export class Blockchain {
     }
 
     return balance;
+  }
+
+  getAllTransactionsForWallet(walletAddress: string): Transaction[] {
+    const transactions = [];
+
+    for (const block of this.blockchain) {
+      for (const transaction of block.transactions) {
+        if (
+          transaction.fromAddress === walletAddress ||
+          transaction.toAddress === walletAddress
+        ) {
+          transactions.push(transaction);
+        }
+      }
+    }
+
+    return transactions;
   }
 }
 

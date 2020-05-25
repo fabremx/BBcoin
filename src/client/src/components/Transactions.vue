@@ -23,29 +23,29 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import * as utils from "../utils";
+import { Transaction } from "../../../commons/transaction";
 
 @Component
-export default class Transaction extends Vue {
-  @Prop() readonly myWalletAddress!: string;
+export default class Transactions extends Vue {
+  @Prop() keyPairs!: any;
+  @Prop() myWalletAddress!: string;
 
   private amount = 0;
   private selectedFromAddress = "";
   private selectedToAddress = "";
-  private key: object = {
-    privateKey: "",
-    publicKey: "",
-  };
 
   public createNewTransaction() {
-    console.log(this.selectedFromAddress, this.selectedToAddress, this.amount);
-
-    utils.createNewTransaction(
+    const transaction = new Transaction(
       this.selectedFromAddress,
       this.selectedToAddress,
       this.amount
     );
+
+    transaction.signTransaction(this.keyPairs);
+
+    utils.createNewTransaction(transaction);
   }
 }
 </script>

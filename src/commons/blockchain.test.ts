@@ -23,14 +23,14 @@ describe("Blockchain Class", () => {
     expect(Blockchain.blockchain).toEqual([expectedResult]);
   });
 
-  describe("createTransaction", () => {
+  describe("addTransaction", () => {
     it("should throw an error when fromAddress is null, undefined or empty", () => {
       // Given
       const transaction = new Transaction("", "addressTo", 10);
 
       // When
       try {
-        Blockchain.createTransaction(transaction);
+        Blockchain.addTransaction(transaction);
       } catch (error) {
         expect(error).toBeDefined();
       }
@@ -42,7 +42,7 @@ describe("Blockchain Class", () => {
 
       // When
       try {
-        Blockchain.createTransaction(transaction);
+        Blockchain.addTransaction(transaction);
       } catch (error) {
         expect(error).toBeDefined();
       }
@@ -55,9 +55,37 @@ describe("Blockchain Class", () => {
 
       // When
       try {
-        Blockchain.createTransaction(transaction);
+        Blockchain.addTransaction(transaction);
       } catch (error) {
         expect(error).toBeDefined();
+      }
+    });
+
+    it("should throw an error when transaction amount is inferior to 0", () => {
+      // Given
+      const transaction = new Transaction("fromAddress", "addressTo", -10);
+
+      // When
+      try {
+        Blockchain.addTransaction(transaction);
+      } catch (error) {
+        expect(error).toBeDefined();
+      }
+    });
+
+    it("should throw an error when transaction amount is inferior to 0", () => {
+      // Given
+      const transaction = new Transaction("fromAddress", "addressTo", 20);
+      const spy = jest
+        .spyOn(Blockchain, "getBalanceOfAddress")
+        .mockReturnValueOnce(10);
+
+      // When
+      try {
+        Blockchain.addTransaction(transaction);
+      } catch (error) {
+        expect(error).toBeDefined();
+        spy.mockClear();
       }
     });
 
@@ -68,7 +96,7 @@ describe("Blockchain Class", () => {
 
       // When
       expect(Blockchain.pendingTransactions).toEqual([]);
-      Blockchain.createTransaction(transaction);
+      Blockchain.addTransaction(transaction);
       expect(Blockchain.pendingTransactions).toEqual([transaction]);
     });
   });
@@ -359,7 +387,7 @@ describe("Blockchain Class", () => {
           new Transaction("other1", "other2", 2),
           new Transaction("other1", walletAddress, 100),
           new Transaction("other2", "other1", 2),
-          new Transaction(walletAddress, "other2", 20),
+          new Transaction(walletAddress, "other2", 20)
         ],
         genesisBlock.hash
       );
@@ -367,7 +395,7 @@ describe("Blockchain Class", () => {
         MOCKED_TIMESTAMP,
         [
           new Transaction("other1", "other2", 2),
-          new Transaction(walletAddress, "other2", 20),
+          new Transaction(walletAddress, "other2", 20)
         ],
         firstBlock.hash
       );
@@ -392,7 +420,7 @@ describe("Blockchain Class", () => {
           new Transaction("other1", "other2", 2),
           new Transaction("other1", walletAddress, 100),
           new Transaction("other2", "other1", 2),
-          new Transaction(walletAddress, "other2", 100),
+          new Transaction(walletAddress, "other2", 100)
         ],
         genesisBlock.hash
       );
@@ -400,7 +428,7 @@ describe("Blockchain Class", () => {
         MOCKED_TIMESTAMP,
         [
           new Transaction("other1", "other2", 2),
-          new Transaction(walletAddress, "other2", 20),
+          new Transaction(walletAddress, "other2", 20)
         ],
         firstBlock.hash
       );
@@ -412,6 +440,47 @@ describe("Blockchain Class", () => {
 
       // Then
       expect(balance).toEqual(-20);
+    });
+  });
+
+  describe("getAllTransactionsForWallet", () => {
+    it("should return all transactiopn of given wallet address", () => {
+      // Given
+      const walletAddress = "myWallet";
+
+      const genesisBlock = Blockchain.getGenesisBlock();
+      const firstBlock = new Block(
+        MOCKED_TIMESTAMP,
+        [
+          new Transaction("other1", "other2", 2),
+          new Transaction("other1", walletAddress, 100),
+          new Transaction("other2", "other1", 2),
+          new Transaction(walletAddress, "other2", 20)
+        ],
+        genesisBlock.hash
+      );
+      const secondBlock = new Block(
+        MOCKED_TIMESTAMP,
+        [
+          new Transaction("other1", "other2", 2),
+          new Transaction(walletAddress, "other2", 20)
+        ],
+        firstBlock.hash
+      );
+
+      Blockchain.blockchain = [genesisBlock, firstBlock, secondBlock];
+
+      // When
+      const transactions = Blockchain.getAllTransactionsForWallet(
+        walletAddress
+      );
+
+      // Then
+      expect(transactions).toEqual([
+        new Transaction("other1", walletAddress, 100),
+        new Transaction(walletAddress, "other2", 20),
+        new Transaction(walletAddress, "other2", 20)
+      ]);
     });
   });
 });

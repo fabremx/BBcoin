@@ -84,7 +84,7 @@ export default class Blockchain extends Vue {
     this.nodesInfo = await this.getNodesInfo();
 
     if (this.nodesInfo.length) {
-      this.blockchain = await this.getBlockchain(this.nodesInfo[0].url);
+      this.blockchain = await this.getBlockchain();
       // this.blockchain.push(
       //   {
       //     timestamp: 123,
@@ -104,8 +104,6 @@ export default class Blockchain extends Vue {
 
   public async getNodesInfo() {
     const nodesConnectedOnNetwork = await utils.getNodesConnectedOnNetwork();
-    console.log("nodesConnectedOnNetwork", nodesConnectedOnNetwork);
-
     const nodesInfo: object[] = [];
 
     await utils.asyncForEach(
@@ -119,8 +117,8 @@ export default class Blockchain extends Vue {
     return nodesInfo;
   }
 
-  public async getBlockchain(nodeUrl: string): Promise<Block[]> {
-    return await utils.getBlockchain(nodeUrl);
+  public async getBlockchain(): Promise<Block[]> {
+    return await utils.getBlockchain();
   }
 }
 </script>
