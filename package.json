@@ -10,7 +10,13 @@
     "elliptic": "^6.5.2",
     "express": "^4.17.1",
     "node-fetch": "^2.6.0",
-    "ws": "^7.2.5"
+    "ts-loader": "^7.0.5",
+    "vue-loader": "^15.9.2",
+    "ws": "^7.2.5",
+    "core-js": "^3.6.4",
+    "vue": "^2.6.11",
+    "vue-class-component": "^7.2.3",
+    "vue-property-decorator": "^8.4.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.6",
@@ -20,17 +26,35 @@
     "@types/node": "^13.13.5",
     "@types/node-fetch": "^2.5.7",
     "@types/ws": "^7.2.4",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "@vue/cli-plugin-babel": "~4.3.0",
+    "@vue/cli-plugin-eslint": "~4.3.0",
+    "@vue/cli-plugin-typescript": "~4.3.0",
+    "@vue/cli-service": "~4.3.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.1.0",
     "babel-preset-env": "^1.7.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-vue": "^6.2.2",
     "jest": "^25.5.4",
+    "prettier": "^1.19.1",
     "ts-jest": "^25.5.1",
     "ts-node": "^8.10.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.3",
+    "vue-template-compiler": "^2.6.11"
   },
   "scripts": {
     "node": "./node_modules/.bin/tsc && node dist/node/node.js",
     "broker": "./node_modules/.bin/tsc && node dist/broker/broker.js",
+    "client": "vue-cli-service serve ./src/client/src/main.ts",
     "test": "jest ./src/*"
+  },
+  "prettier": {
+    "trailingComma": "none"
   },
   "repository": {
     "type": "git",
