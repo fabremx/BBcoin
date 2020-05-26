@@ -1,20 +1,16 @@
 <template>
   <div id="app">
+    <NodesInfo />
     <BlockchainInfo />
-    <WalletInfo
-      v-bind:keyPairs="keyPairs"
-      v-bind:myWalletAddress="myWalletAddress"
-    />
+    <WalletInfo v-bind:keyPairs="keyPairs" v-bind:myWalletAddress="myWalletAddress" />
     <!-- eslint-disable-next-line prettier/prettier -->
-    <Transactions
-      v-bind:keyPairs="keyPairs"
-      v-bind:myWalletAddress="myWalletAddress"
-    />
+    <Transactions v-bind:keyPairs="keyPairs" v-bind:myWalletAddress="myWalletAddress" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import NodesInfo from "./components/NodesInfo.vue";
 import BlockchainInfo from "./components/BlockchainInfo.vue";
 import WalletInfo from "./components/WalletInfo.vue";
 import Transactions from "./components/Transactions.vue";
@@ -22,6 +18,7 @@ import * as elliptic from "elliptic";
 
 @Component({
   components: {
+    NodesInfo,
     BlockchainInfo,
     WalletInfo,
     Transactions
@@ -43,3 +40,9 @@ export default class App extends Vue {
   }
 }
 </script>
+
+<style>
+body {
+  background-color: #f5f6fd;
+}
+</style>
