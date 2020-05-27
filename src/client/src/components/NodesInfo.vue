@@ -1,17 +1,12 @@
 <template>
   <div class="blockhain__info_component">
-    <h3>Blockchain network information</h3>
     <p>
       Noeud présent sur le réseaux:
       <span class="blockhain__info--number">{{ nodesInfo.length }}</span>
     </p>
 
     <div class="nodeInfo__container">
-      <table
-        v-for="(node, index) in nodesInfo"
-        :key="node.url"
-        class="nodeInfo__table"
-      >
+      <table v-for="(node, index) in nodesInfo" :key="node.url" class="nodeInfo__table">
         <tr class="nodeInfo__table--firstLine">
           <td colspan="2">
             <h4>Node {{ index + 1 }}</h4>
@@ -66,12 +61,6 @@ export default class NodesInfo extends Vue {
 <style scoped>
 .blockhain__info_component {
   margin-bottom: 30px;
-}
-
-.blockhain__info_component h3 {
-  margin: 0 0 10px;
-  font-size: 20px;
-  font-weight: 600;
 }
 
 .blockhain__info_component p {

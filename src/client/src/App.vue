@@ -6,16 +6,9 @@
       <BlockchainInfo />
     </div>
 
-    <div class="account_container">
-      <WalletInfo
-        v-bind:keyPairs="keyPairs"
-        v-bind:myWalletAddress="myWalletAddress"
-      />
-      <!-- eslint-disable-next-line prettier/prettier -->
-      <Transactions
-        v-bind:keyPairs="keyPairs"
-        v-bind:myWalletAddress="myWalletAddress"
-      />
+    <div class="transactions_container">
+      <WalletInfo v-bind:keyPairs="keyPairs" v-bind:myWalletAddress="myWalletAddress" />
+      <Transactions v-bind:keyPairs="keyPairs" v-bind:myWalletAddress="myWalletAddress" />
     </div>
   </div>
 </template>
@@ -57,8 +50,6 @@ export default class App extends Vue {
 html,
 body {
   height: 100%;
-}
-body {
   background-color: #f5f6fd;
 }
 
@@ -69,9 +60,9 @@ body {
 }
 
 .blockchain__network_container {
-  margin: 20px;
+  margin: 10px 20px 20px;
 }
-.account_container {
+.transactions_container {
   display: flex;
   padding: 20px;
 }
