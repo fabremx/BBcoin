@@ -1,6 +1,6 @@
 <template>
   <div class="blockchain__info">
-    <h2>Blockchain state</h2>
+    <h3>Blockchain state</h3>
     <div class="blockchain__container">
       <div
         v-for="(block, index) in blockchain"
@@ -9,27 +9,28 @@
       >
         <div class="blockchain__block">
           <div class="blockchain__block_title">
-            <h4>Block n°{{index + 1}}</h4>
+            <h4>BLOCK #{{ index + 1 }}</h4>
+            <span>{{ block.timestamp }}</span>
           </div>
+
           <div class="blockchain__block_first">
             <div class="block__info">
-              <div class="block__info--prop">timestamp:</div>
-              <div class="block__info--value">{{ block.timestamp }}</div>
+              <div class="block__info--prop">PREVIOUS HASH</div>
+              <div class="block__info--value valid">
+                {{ block.previousHash }}
+              </div>
             </div>
 
             <div class="block__info">
-              <div class="block__info--prop">previousHash:</div>
-              <div class="block__info--value">{{ getCuttedString(block.previousHash) }}</div>
+              <div class="block__info--prop">HASH</div>
+              <div class="block__info--value valid background">
+                {{ block.hash }}
+              </div>
             </div>
 
             <div class="block__info">
-              <div class="block__info--prop">hash:</div>
-              <div class="block__info--value">{{ getCuttedString(block.hash) }}</div>
-            </div>
-
-            <div class="block__info">
-              <div class="block__info--prop">nonce:</div>
-              <div class="block__info--value">{{ block.nonce }}</div>
+              <div class="block__info--prop">Nonce</div>
+              <div class="block__info--value nounce">{{ block.nonce }}</div>
             </div>
           </div>
 
@@ -39,17 +40,27 @@
               v-for="(transaction, index) in block.transactions"
               :key="index"
               class="block__transacttions"
-              v-bind:class="[{ even: index % 2 === 0 }, { odd: index % 2 !== 0 }]"
+              v-bind:class="[
+                { even: index % 2 === 0 },
+                { odd: index % 2 !== 0 }
+              ]"
             >
-              <div
-                class="block__transactions--addresses"
-              >{{transaction.fromAddress}} >> {{transaction.toAddress}}</div>
-              <div class="block__transactions--amount">{{transaction.amount}}</div>
+              <div class="block__transactions--addresses">
+                {{ transaction.fromAddress }}
+                <span>></span>
+                {{ transaction.toAddress }}
+              </div>
+              <div class="block__transactions--amount">
+                {{ transaction.amount }} F
+              </div>
             </div>
           </div>
         </div>
 
-        <div v-if="index !== blockchain.length - 1" class="blockchain__arrow"></div>
+        <div
+          v-if="index !== blockchain.length - 1"
+          class="blockchain__arrow"
+        ></div>
       </div>
     </div>
   </div>
@@ -114,53 +125,57 @@ export default class Blockchain extends Vue {
   public async getBlockchain(): Promise<Block[]> {
     return await utils.getBlockchain();
   }
-
-  public getCuttedString(str: string): string {
-    if (str.length <= 15) return str;
-
-    return `...${str.substring(str.length - 15, str.length)}`;
-  }
 }
 </script>
 
 <style scoped>
+.blockchain__info h3 {
+  margin: 0 0 15px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
 .blockchain__container {
   display: flex;
+  flex-wrap: wrap;
 }
 .blockchain__block__container {
   position: relative;
-  width: 285px;
+  width: 555px;
 }
 
 .blockchain__block {
-  width: 250px;
+  width: 520px;
   border-radius: 5px;
   -webkit-box-shadow: 2px 4px 8px -2px rgba(119, 119, 119, 0.5);
   -moz-box-shadow: 2px 4px 8px -2px rgba(119, 119, 119, 0.5);
   box-shadow: 2px 4px 8px -2px rgba(119, 119, 119, 0.5);
 }
 
-.blockchain__block_first,
-.blockchain__block_second {
-  color: #9b9b9b;
-}
-
 .blockchain__block_title {
+  display: flex;
+  align-items: baseline;
   margin: 0;
   padding: 6px 25px;
   border-radius: 5px 5px 0 0;
-  background: linear-gradient(to bottom right, #ff8a94, #feb592);
+  background-color: white;
 }
-
 .blockchain__block_title h4 {
   margin: 5px 0;
-  color: white;
+  color: #595959;
+  font-size: 17px;
+  font-weight: 600;
+}
+.blockchain__block_title span {
+  margin-left: 10px;
+  font-size: 9px;
+  color: #9b9b9b;
 }
 
 .blockchain__block_first {
   display: flex;
   flex-direction: column;
-  padding: 10px 25px;
+  padding: 0px 25px 14px 25px;
   border-bottom: 1px solid #e4e7eb;
   background-color: white;
   font-size: 13px;
@@ -168,31 +183,44 @@ export default class Blockchain extends Vue {
 
 .block__info {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
 }
 
 .block__info--prop {
   font-weight: 500;
   color: #4e4f57;
+  font-size: 12px;
 }
 
 .block__info--value {
-  margin-left: 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-left: 10px;
+  font-size: 11px;
+}
+.block__info--value.valid {
+  color: #52c41a;
+}
+.block__info--value.valid.background {
+  padding: 0 10px;
+  border: 1px solid #b7eb8f;
+  border-radius: 5px;
+  background-color: #f6ffed;
+}
+.block__info--value.nounce {
+  color: #6b696f;
+  font-size: 11px;
 }
 
 .blockchain__block_second {
   border-radius: 0 0 5px 5px;
   background-color: #e9ecf4;
 }
-
 .blockchain__block_second h4 {
   margin: 0;
   padding: 5px 25px;
-  color: #848484;
+  font-size: 13px;
+  font-weight: 600;
+  color: #595959;
 }
 
 .block__transacttions {
@@ -202,23 +230,26 @@ export default class Blockchain extends Vue {
   align-items: center;
   justify-content: space-between;
 }
-
 .block__transacttions.even {
   background-color: white;
 }
-
 .block__transacttions.odd {
   background-color: #f6f6f6;
 }
-
 .block__transactions--addresses {
+  color: #4a4a4a;
   font-size: 12px;
 }
-
+.block__transactions--addresses span {
+  font-size: 15px;
+  margin: 0 10px;
+  font-weight: 700;
+}
 .block__transactions--amount {
   margin-left: 10px;
   color: #4e4f57;
-  font-size: 19px;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .blockchain__arrow {

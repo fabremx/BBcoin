@@ -1,27 +1,33 @@
 <template>
-  <div class="blockhain__info">
-    <h2>Blockchain network information</h2>
+  <div class="blockhain__info_component">
+    <h3>Blockchain network information</h3>
     <p>
       Noeud présent sur le réseaux:
       <span class="blockhain__info--number">{{ nodesInfo.length }}</span>
     </p>
 
     <div class="nodeInfo__container">
-      <table v-for="(node, index) in nodesInfo" :key="node.url" class="nodeInfo__table">
+      <table
+        v-for="(node, index) in nodesInfo"
+        :key="node.url"
+        class="nodeInfo__table"
+      >
         <tr class="nodeInfo__table--firstLine">
-          <td colspan="2">Node {{ index + 1 }}</td>
+          <td colspan="2">
+            <h4>Node {{ index + 1 }}</h4>
+          </td>
         </tr>
-        <tr>
-          <td>URL</td>
-          <td>{{ node.url }}</td>
+        <tr class="even">
+          <td class="prop">URL</td>
+          <td class="value">{{ node.url }}</td>
         </tr>
-        <tr>
-          <td>Clients</td>
-          <td>{{ node.clients.join(", ") }}</td>
+        <tr class="odd">
+          <td class="prop">Clients</td>
+          <td class="value">{{ node.clients.join(", ") }}</td>
         </tr>
-        <tr>
-          <td>Servers</td>
-          <td>{{ node.servers.join(", ") }}</td>
+        <tr class="even">
+          <td class="prop">Servers</td>
+          <td class="value">{{ node.servers.join(", ") }}</td>
         </tr>
       </table>
     </div>
@@ -58,6 +64,20 @@ export default class NodesInfo extends Vue {
 </script>
 
 <style scoped>
+.blockhain__info_component {
+  margin-bottom: 30px;
+}
+
+.blockhain__info_component h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.blockhain__info_component p {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
 .blockhain__info--number {
   margin-left: 7px;
   font-size: 19px;
@@ -72,11 +92,45 @@ export default class NodesInfo extends Vue {
   max-width: 400px;
   margin-right: 20px;
   border-collapse: collapse;
+  background-color: white;
+  border-radius: 5px;
+  -webkit-box-shadow: 2px 4px 8px -2px rgba(119, 119, 119, 0.5);
+  -moz-box-shadow: 2px 4px 8px -2px rgba(119, 119, 119, 0.5);
+  box-shadow: 2px 4px 8px -2px rgba(119, 119, 119, 0.5);
+}
+
+.nodeInfo__table--firstLine {
+  border-radius: 5px 5px 0 0;
+}
+
+.nodeInfo__table--firstLine h4 {
+  color: #595959;
+  margin: 2px 0;
+  font-weight: 600;
+}
+
+.nodeInfo__table tr {
+  text-align: left;
+}
+.nodeInfo__table tr.even {
+  background-color: #f6f6f6;
+}
+.nodeInfo__table tr.odd {
+  background-color: white;
+}
+
+td.prop {
+  color: #595959;
+  font-size: 13px;
+  float: left;
+}
+td.value {
+  color: #9b9b9b;
+  font-size: 12px;
 }
 
 .nodeInfo__table td {
   padding: 5px 10px;
-  border: 1px solid black;
   text-align: center;
 }
 </style>
