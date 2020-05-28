@@ -1,5 +1,5 @@
 import P2pServer from "../commons/p2pServer";
-import { BROKER_WEBSOCKET_PORT } from "../config/env";
+import { BROKER_WEBSOCKET_PORT } from "../constants/urls";
 import WebSocket from "ws";
 
 export class WebSocketServer extends P2pServer {

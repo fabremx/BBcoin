@@ -11,7 +11,7 @@
         <div class="blockchain__block">
           <div class="blockchain__block_title">
             <h4>BLOCK #{{ index + 1 }}</h4>
-            <span>{{ block.timestamp }}</span>
+            <span>{{ timestampToDate(block.timestamp) }}</span>
           </div>
 
           <div class="blockchain__block_first">
@@ -81,8 +81,10 @@ export default class Blockchain extends Vue {
     // this.blockchain.push(
     //   {
     //     timestamp: 123,
-    //     previousHash: "prg6534d8hrg6gbr",
-    //     hash: "heash",
+    //     previousHash:
+    //       "51c90c4c57a2a43add073cdb6a515ec5fe7524cda71e43a0b844209191d49fa3 ",
+    //     hash:
+    //       "51c90c4c57a2a43add073cdb6a515ec5fe7524cda71e43a0b844209191d49fa3 ",
     //     nonce: 2,
     //     transactions: [
     //       {
@@ -104,8 +106,10 @@ export default class Blockchain extends Vue {
     //   },
     //   {
     //     timestamp: 123,
-    //     previousHash: "prg6534d8hrg6gbr",
-    //     hash: "heash",
+    //     previousHash:
+    //       "51c90c4c57a2a43add073cdb6a515ec5fe7524cda71e43a0b844209191d49fa3 ",
+    //     hash:
+    //       "51c90c4c57a2a43add073cdb6a515ec5fe7524cda71e43a0b844209191d49fa3 ",
     //     nonce: 2,
     //     transactions: [
     //       {
@@ -125,6 +129,38 @@ export default class Blockchain extends Vue {
 
   public async getBlockchain(): Promise<Block[]> {
     return await utils.getBlockchain();
+  }
+
+  public timestampToDate(timestamp: number): string {
+    const date = new Date(timestamp * 1000);
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+
+    const year = date.getFullYear();
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const hour = this.str_pad(date.getHours());
+    const min = this.str_pad(date.getMinutes());
+    const sec = this.str_pad(date.getSeconds());
+    const time =
+      day + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
+    return time;
+  }
+
+  private str_pad(n: number) {
+    return String("00" + n).slice(-2);
   }
 }
 </script>
@@ -188,6 +224,7 @@ export default class Blockchain extends Vue {
   margin-bottom: 2px;
 }
 .block__info--prop {
+  flex: 0 0 auto;
   font-weight: 500;
   color: #4e4f57;
   font-size: 12px;
@@ -236,6 +273,8 @@ export default class Blockchain extends Vue {
   background-color: #f6f6f6;
 }
 .block__transactions--addresses {
+  display: flex;
+  align-items: center;
   color: #4a4a4a;
   font-size: 12px;
 }

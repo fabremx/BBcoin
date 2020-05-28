@@ -29,6 +29,8 @@ export class Block {
   }
 
   mineBlock(difficulty: number) {
+    console.log("Mining in progress...");
+
     while (
       this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")
     ) {

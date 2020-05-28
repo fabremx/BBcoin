@@ -1,5 +1,5 @@
 import HttpServer from "../commons/httpServer";
-import { BROKER_HTTP_PORT } from "../config/env";
+import { BROKER_HTTP_PORT } from "../constants/urls";
 import webScoketServer from "./webSocketServer";
 
 class BrokerHttpServer extends HttpServer {

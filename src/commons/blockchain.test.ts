@@ -1,7 +1,7 @@
 import { Transaction } from "./transaction";
 import { Block } from "./block";
 import Blockchain from "./blockchain";
-import { MY_WALLET_ADDRESS } from "../config/env";
+import { MY_WALLET_ADDRESS } from "../constants/shared";
 
 const MOCKED_TIMESTAMP = 2020;
 jest.spyOn(console, "error").mockImplementation();

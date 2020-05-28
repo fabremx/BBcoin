@@ -3,7 +3,7 @@ import NodeServer from "../node/nodeServer";
 import Blockchain from "../commons/blockchain";
 import { Transaction } from "../commons/transaction";
 import Message from "../commons/message";
-import { NEW_TRANSACTION_MESSAGE } from "../config/env";
+import { NEW_TRANSACTION_MESSAGE } from "../constants/messageTypes";
 
 declare var process: {
   env: {
@@ -47,21 +47,16 @@ class NodeHttpServer extends HttpServer {
       );
       console.log(`Recieve new transaction`, transaction);
 
-      try {
-        Blockchain.addTransaction(transaction);
-      } catch (error) {
-        console.log(error);
-        res.send(error);
-      }
-
-      const newTransactionMessage = new Message(NEW_TRANSACTION_MESSAGE, [
+      const newTransactionMessage = new Message(
+        NEW_TRANSACTION_MESSAGE,
         transaction
-      ]);
+      );
 
       console.log(
         `Broadcast to other nodes the transaction...`,
         newTransactionMessage
       );
+      NodeServer.handleMessageReceived(newTransactionMessage);
       NodeServer.broadcast(newTransactionMessage);
       res.send();
     });

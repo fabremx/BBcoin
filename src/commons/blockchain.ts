@@ -1,10 +1,10 @@
 import { Transaction } from "./transaction";
 import { Block } from "./block";
-import { MY_WALLET_ADDRESS } from "../config/env";
+import { MY_WALLET_ADDRESS } from "../constants/shared";
 
 export class Blockchain {
   public blockchain: Block[] = [];
-  difficulty: number = 2;
+  difficulty: number = 5;
   pendingTransactions: Transaction[] = [];
   miningReward: number = 100;
 

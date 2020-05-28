@@ -49,7 +49,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import * as utils from "../utils";
-import { MY_WALLET_ADDRESS } from "../../../config/env";
+import { MY_WALLET_ADDRESS } from "../../../constants/shared";
 import { Transaction } from "../../../commons/transaction";
 
 @Component

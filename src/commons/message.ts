@@ -2,10 +2,10 @@ import { Transaction } from "./transaction";
 
 export default class Message {
   type: string;
-  transactions: Transaction[];
+  transaction: Transaction;
 
-  constructor(type: string, transactions: Transaction[]) {
+  constructor(type: string, transaction: Transaction) {
     this.type = type;
-    this.transactions = transactions;
+    this.transaction = transaction;
   }
 }

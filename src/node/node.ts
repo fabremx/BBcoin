@@ -1,8 +1,5 @@
-import {
-  BROKER_HTTP_PORT,
-  HTTP_URL_BASE,
-  INTERVAL_RETRIEVE_PEERS,
-} from "../config/env";
+import { BROKER_HTTP_PORT, HTTP_URL_BASE } from "../constants/urls";
+import { INTERVAL_RETRIEVE_PEERS } from "../constants/shared";
 import express from "express";
 import nodeServer, { NodeServer } from "./nodeServer";
 import httpServer from "./httpServer";

@@ -1,4 +1,4 @@
-import { BROKER_HTTP_PORT } from "../config/env";
+import { BROKER_HTTP_PORT } from "../constants/urls";
 import express from "express";
 import cors from "cors";
 import * as bodyParser from "body-parser";

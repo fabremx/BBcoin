@@ -1,8 +1,13 @@
 import P2pServer from "../commons/p2pServer";
-import { BROKER_WEBSOCKET_PORT, WEBSOCKET_URL_BASE } from "../config/env";
+import { BROKER_WEBSOCKET_PORT, WEBSOCKET_URL_BASE } from "../constants/urls";
 import WebSocket from "ws";
 import Node from "../commons/Node";
 import Message from "../commons/message";
+import {
+  NEW_TRANSACTION_MESSAGE,
+  NEW_BLOCK_ADDED_MESSAGE
+} from "../constants/messageTypes";
+import Blockchain from "../commons/blockchain";
 
 declare var process: {
   env: {
@@ -67,7 +72,20 @@ export class NodeServer extends P2pServer {
 
     ws.on("message", (message: Message) => {
       console.log(`\Message received from ${peerURL} : ${message}\n`);
+      this.handleMessageReceived(message);
     });
+  }
+
+  handleMessageReceived(message: Message) {
+    switch (message.type) {
+      case NEW_TRANSACTION_MESSAGE:
+        Blockchain.addTransaction(message.transaction);
+        Blockchain.minePendingTransactions("test");
+      case NEW_BLOCK_ADDED_MESSAGE:
+        break;
+      default:
+        break;
+    }
   }
 
   deleteServerNode(serverNode: Node): void {

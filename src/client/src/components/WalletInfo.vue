@@ -14,7 +14,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import * as utils from "../utils";
-import { MY_WALLET_ADDRESS } from "../../../config/env";
+import { MY_WALLET_ADDRESS } from "../../../constants/shared";
 
 @Component
 export default class WalletInfo extends Vue {

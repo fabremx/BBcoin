@@ -6,7 +6,7 @@ import {
   WALLET_PLATFORM_GET_AMOUNT_WALLET_URL,
   WALLET_PLATFORM_ADD_TRANSACTION_URL,
   HTTP_URL_BASE
-} from "../../config/env";
+} from "../../constants/urls";
 
 function getPortFromUrl(nodeUrl: string): string {
   return (parseInt(nodeUrl.split(":")[2]) - 3000).toString();
