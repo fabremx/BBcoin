@@ -121,36 +121,6 @@ describe("Blockchain Class", () => {
     });
   });
 
-  describe("generateNextBlock", () => {
-    it("should generate the next with the info of the previous block", () => {
-      // Given
-      Blockchain.blockchain = [];
-      const previousBlock = new Block(
-        MOCKED_TIMESTAMP,
-        MOCEKD_TRANSACTIONS,
-        MOCKED_PREVIOUS_HASH
-      );
-
-      Blockchain.getLatestBlock = jest
-        .fn()
-        .mockImplementation(() => previousBlock);
-
-      const newBlockTransactions = [new Transaction("from", "to", 100)];
-
-      // When
-      const newBlock = Blockchain.generateNextBlock(newBlockTransactions);
-
-      // Then
-      const expectedBlock = new Block(
-        MOCKED_TIMESTAMP,
-        newBlockTransactions,
-        previousBlock.hash
-      );
-
-      expect(newBlock).toEqual(expectedBlock);
-    });
-  });
-
   describe("isNewBlockValid", () => {
     it("should return false when the previousHash does not match with the hash of the previous block", () => {
       // Given

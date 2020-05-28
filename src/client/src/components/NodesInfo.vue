@@ -6,8 +6,12 @@
     </p>
 
     <div class="nodeInfo__container">
-      <table v-for="(node, index) in nodesInfo" :key="node.url" class="nodeInfo__table">
-        <tr class="nodeInfo__table--firstLine">
+      <table
+        v-for="(node, index) in nodesInfo"
+        :key="node.url"
+        class="nodeInfo__table"
+      >
+        <tr>
           <td colspan="2">
             <h4>Node {{ index + 1 }}</h4>
           </td>
@@ -88,11 +92,7 @@ export default class NodesInfo extends Vue {
   box-shadow: 2px 4px 8px -2px rgba(119, 119, 119, 0.5);
 }
 
-.nodeInfo__table--firstLine {
-  border-radius: 5px 5px 0 0;
-}
-
-.nodeInfo__table--firstLine h4 {
+td h4 {
   color: #595959;
   margin: 2px 0;
   font-weight: 600;

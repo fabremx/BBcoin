@@ -8,4 +8,6 @@ export const BROKER_GET_NODES_INFO_URL = `${HTTP_URL_BASE}:3000/getNodes`;
 
 export const WALLET_PLATFORM_GET_BLOCKCHAIN_URL = `${HTTP_URL_BASE}:3001/blockchain`;
 export const WALLET_PLATFORM_GET_AMOUNT_WALLET_URL = `${HTTP_URL_BASE}:3001/wallet`;
-export const WALLET_PLATFORM_ADD_TRANSACTION_URL = `${HTTP_URL_BASE}:3001/addBlock`;
+export const WALLET_PLATFORM_ADD_TRANSACTION_URL = `${HTTP_URL_BASE}:3001/addTransaction`;
+
+export const MY_WALLET_ADDRESS = "My WAllet";

@@ -19,16 +19,6 @@ export class Blockchain {
     return new Block(timestamp, genesisData, previousHash);
   }
 
-  generateNextBlock(newBlockTransaction: Transaction[]): Block {
-    const newBlockTimestamp = new Date().getTime();
-
-    return new Block(
-      newBlockTimestamp,
-      newBlockTransaction,
-      this.getLatestBlock().hash
-    );
-  }
-
   getLatestBlock(): Block {
     return this.blockchain[this.blockchain.length - 1];
   }
@@ -56,7 +46,11 @@ export class Blockchain {
   }
 
   minePendingTransactions(miningRewardAddress: string) {
-    const block = new Block(Date.now(), this.pendingTransactions);
+    const block = new Block(
+      Date.now(),
+      this.pendingTransactions,
+      this.getLatestBlock().hash
+    );
 
     block.mineBlock(this.difficulty);
     this.blockchain.push(block);

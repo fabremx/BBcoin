@@ -19,7 +19,7 @@ class NodeHttpServer extends HttpServer {
     this.server.get("/infos", (req, res) => {
       const nodeInfo = {
         clients: NodeServer.getClientNodesURL(),
-        servers: NodeServer.getServerNodesRL(),
+        servers: NodeServer.getServerNodesRL()
       };
 
       res.status(200).send(JSON.stringify(nodeInfo));
@@ -36,27 +36,16 @@ class NodeHttpServer extends HttpServer {
       res.status(200).send(JSON.stringify(amountWAllet));
     });
 
-    this.server.post("/addBlock", (req, res) => {
+    this.server.post("/addTransaction", (req, res) => {
       const { transaction } = req.body;
-      console.log("***************", transaction);
 
-      // const newBlock = Blockchain.generateNextBlock(req.body.data);
-      // //   this.blockchainService.addBlock(newBlock);
+      try {
+        Blockchain.addTransaction(transaction);
+      } catch (error) {
+        res.send(error);
+      }
 
-      // NodeServer.broadcast("message");
-
-      // console.log("block ajouté : " + JSON.stringify(newBlock));
-      res.send();
-    });
-
-    this.server.post("/mineBlock", (req, res) => {
-      var newBlock = Blockchain.generateNextBlock(req.body.data);
-
-      //   this.blockchainService.addBlock(newBlock);
-
-      NodeServer.broadcast("message");
-
-      console.log("block ajouté : " + JSON.stringify(newBlock));
+      NodeServer.broadcast(transaction);
       res.send();
     });
   }

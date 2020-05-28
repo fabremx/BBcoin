@@ -21,9 +21,8 @@ export class Transaction {
   }
 
   signTransaction(signingKey: any): void {
-    if (signingKey.getPublic("hex") !== this.fromAddress) {
-      throw new Error("You cannot sign transactions for other wallets!");
-    }
+    /* In an normal case we have to verify that you can give money only from your own wallet.
+     ** However in this demo we omit this validation. */
 
     const hashTx = this.calculateHash();
     const sig = signingKey.sign(hashTx, "base64");

@@ -14,17 +14,6 @@ describe("Transaction Class", () => {
   });
 
   describe("isValid", () => {
-    it("should return true when fromAddress is equal to null", () => {
-      // Given
-      const transaction = new Transaction("null", "null", 10);
-
-      // When
-      const result = transaction.isValid();
-
-      // Then
-      expect(result).toBe(true);
-    });
-
     it("should return true when signature is an empty array", () => {
       // Given
       const transaction = new Transaction("fromAdress", "toAddress", 10);

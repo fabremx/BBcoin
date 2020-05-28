@@ -5,7 +5,11 @@
     <div class="transaction_selects">
       <div class="transaction_selects--container">
         <b-field label="From" class="from">
-          <b-select placeholder="Select a wallet" expanded="true">
+          <b-select
+            v-model="selectedFromAddress"
+            placeholder="Select a wallet"
+            expanded
+          >
             <option v-for="wallet in wallets" :value="wallet" :key="wallet">
               {{ wallet }}
             </option>
@@ -15,7 +19,11 @@
 
       <div class="transaction_selects--container">
         <b-field label="To" class="to">
-          <b-select placeholder="Select a wallet" expanded="true">
+          <b-select
+            v-model="selectedToAddress"
+            placeholder="Select a wallet"
+            expanded
+          >
             <option v-for="wallet in wallets" :value="wallet" :key="wallet">
               {{ wallet }}
             </option>
@@ -25,10 +33,14 @@
     </div>
 
     <b-field>
-      <b-input placeholder="Amount" type="number"> </b-input>
+      <b-input placeholder="Amount" type="number" v-model="amount"> </b-input>
     </b-field>
 
-    <b-button type="is-primary" v-on:click="createNewTransaction()" outlined
+    <b-button
+      type="is-primary"
+      v-on:click="createNewTransaction()"
+      outlined
+      :disabled="isButtonDisabled()"
       >Add Transaction</b-button
     >
   </div>
@@ -37,6 +49,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import * as utils from "../utils";
+import { MY_WALLET_ADDRESS } from "../../../config/env";
 import { Transaction } from "../../../commons/transaction";
 
 @Component
@@ -45,9 +58,9 @@ export default class Transactions extends Vue {
   @Prop() myWalletAddress!: string;
 
   private amount = 0;
-  private selectedFromAddress = "";
-  private selectedToAddress = "";
-  private wallets = ["My Wallet", "Wallet 2", "Wallet 3"];
+  private selectedFromAddress: string = "";
+  private selectedToAddress: string = "";
+  private wallets = [MY_WALLET_ADDRESS, "Wallet 2", "Wallet 3"];
 
   public createNewTransaction() {
     const transaction = new Transaction(
@@ -59,6 +72,10 @@ export default class Transactions extends Vue {
     transaction.signTransaction(this.keyPairs);
 
     utils.createNewTransaction(transaction);
+  }
+
+  isButtonDisabled(): boolean {
+    return !this.selectedFromAddress || !this.selectedToAddress || !this.amount;
   }
 }
 </script>

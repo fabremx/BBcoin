@@ -1,6 +1,7 @@
 <template>
   <div class="blockchain__info">
     <h3>Blockchain state</h3>
+
     <div class="blockchain__container">
       <div
         v-for="(block, index) in blockchain"
@@ -186,13 +187,11 @@ export default class Blockchain extends Vue {
   align-items: baseline;
   margin-bottom: 2px;
 }
-
 .block__info--prop {
   font-weight: 500;
   color: #4e4f57;
   font-size: 12px;
 }
-
 .block__info--value {
   margin-left: 10px;
   font-size: 11px;
