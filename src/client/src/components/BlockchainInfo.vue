@@ -52,7 +52,7 @@
                 {{ transaction.toAddress }}
               </div>
               <div class="block__transactions--amount">
-                {{ transaction.amount }} F
+                {{ transaction.amount }} b
               </div>
             </div>
           </div>

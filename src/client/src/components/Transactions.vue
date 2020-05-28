@@ -54,13 +54,10 @@ import { Transaction } from "../../../commons/transaction";
 
 @Component
 export default class Transactions extends Vue {
-  @Prop() keyPairs!: any;
-  @Prop() myWalletAddress!: string;
-
   private amount = 0;
   private selectedFromAddress: string = "";
   private selectedToAddress: string = "";
-  private wallets = [MY_WALLET_ADDRESS, "Wallet 2", "Wallet 3"];
+  private wallets = [MY_WALLET_ADDRESS, "Wallet2", "Wallet3"];
 
   public createNewTransaction() {
     const transaction = new Transaction(
@@ -68,8 +65,6 @@ export default class Transactions extends Vue {
       this.selectedToAddress,
       this.amount
     );
-
-    transaction.signTransaction(this.keyPairs);
 
     utils.createNewTransaction(transaction);
   }

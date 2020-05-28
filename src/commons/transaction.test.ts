@@ -12,18 +12,4 @@ describe("Transaction Class", () => {
     // TODO: expect sha256 method
     expect(typeof result).toBe("string");
   });
-
-  describe("isValid", () => {
-    it("should return true when signature is an empty array", () => {
-      // Given
-      const transaction = new Transaction("fromAdress", "toAddress", 10);
-      transaction.signature = [];
-
-      // When
-      const result = transaction.isValid();
-
-      // Then
-      expect(result).toBe(false);
-    });
-  });
 });

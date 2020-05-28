@@ -2,6 +2,8 @@ import HttpServer from "../commons/httpServer";
 import NodeServer from "../node/nodeServer";
 import Blockchain from "../commons/blockchain";
 import { Transaction } from "../commons/transaction";
+import Message from "../commons/message";
+import { NEW_TRANSACTION_MESSAGE } from "../config/env";
 
 declare var process: {
   env: {
@@ -30,22 +32,37 @@ class NodeHttpServer extends HttpServer {
     });
 
     this.server.get("/wallet/:walletId", (req, res) => {
-      const walletId = req.params.id;
+      const walletId = req.params.walletId;
       const amountWAllet = Blockchain.getBalanceOfAddress(walletId);
 
       res.status(200).send(JSON.stringify(amountWAllet));
     });
 
     this.server.post("/addTransaction", (req, res) => {
-      const { transaction } = req.body;
+      const transaction = new Transaction(
+        req.body.transaction.fromAddress,
+        req.body.transaction.toAddress,
+        req.body.transaction.amount,
+        req.body.transaction.signature
+      );
+      console.log(`Recieve new transaction`, transaction);
 
       try {
         Blockchain.addTransaction(transaction);
       } catch (error) {
+        console.log(error);
         res.send(error);
       }
 
-      NodeServer.broadcast(transaction);
+      const newTransactionMessage = new Message(NEW_TRANSACTION_MESSAGE, [
+        transaction
+      ]);
+
+      console.log(
+        `Broadcast to other nodes the transaction...`,
+        newTransactionMessage
+      );
+      NodeServer.broadcast(newTransactionMessage);
       res.send();
     });
   }

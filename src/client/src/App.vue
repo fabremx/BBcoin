@@ -7,8 +7,8 @@
     </div>
 
     <div class="transactions_container">
-      <WalletInfo v-bind:keyPairs="keyPairs" v-bind:myWalletAddress="myWalletAddress" />
-      <Transactions v-bind:keyPairs="keyPairs" v-bind:myWalletAddress="myWalletAddress" />
+      <WalletInfo />
+      <Transactions />
     </div>
   </div>
 </template>
@@ -19,7 +19,6 @@ import NodesInfo from "./components/NodesInfo.vue";
 import BlockchainInfo from "./components/BlockchainInfo.vue";
 import WalletInfo from "./components/WalletInfo.vue";
 import Transactions from "./components/Transactions.vue";
-import * as elliptic from "elliptic";
 
 @Component({
   components: {
@@ -29,21 +28,7 @@ import * as elliptic from "elliptic";
     Transactions
   }
 })
-export default class App extends Vue {
-  private myWalletAddress = null;
-  private keyPairs: any;
-
-  created() {
-    this.keyPairs = this.generateKeys();
-    this.myWalletAddress = this.keyPairs.getPublic("hex");
-  }
-
-  generateKeys() {
-    const EC = elliptic.ec;
-    const ec = new EC("secp256k1");
-    return ec.genKeyPair();
-  }
-}
+export default class App extends Vue {}
 </script>
 
 <style>

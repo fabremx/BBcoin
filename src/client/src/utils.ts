@@ -1,5 +1,5 @@
 import { Block } from "../../commons/block";
-import { Transaction } from "@/commons/transaction";
+import { Transaction } from "../../commons/transaction";
 import {
   BROKER_GET_NODES_INFO_URL,
   WALLET_PLATFORM_GET_BLOCKCHAIN_URL,

@@ -6,7 +6,7 @@
       <div class="wallet__info_amount--img">
         <img src="../assets/money.png" />
       </div>
-      <div class="wallet__info_amount--value">{{ walletAmount }}</div>
+      <div class="wallet__info_amount--value">{{ walletAmount }} b</div>
     </div>
   </div>
 </template>
@@ -14,16 +14,14 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import * as utils from "../utils";
+import { MY_WALLET_ADDRESS } from "../../../config/env";
 
 @Component
 export default class WalletInfo extends Vue {
-  @Prop() readonly keyPairs!: string;
-  @Prop() readonly myWalletAddress!: string;
-
   private walletAmount: number | null = null;
 
   async created() {
-    this.walletAmount = await utils.getAmmountWallet(this.myWalletAddress);
+    this.walletAmount = await utils.getAmmountWallet(MY_WALLET_ADDRESS);
   }
 }
 </script>

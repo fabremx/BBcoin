@@ -37,14 +37,4 @@ export class Block {
     }
     console.log("BLOCK MINED: " + this.hash);
   }
-
-  hasValidTransactions(): boolean {
-    for (const transaction of this.transactions) {
-      if (!transaction.isValid()) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 }

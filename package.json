@@ -9,7 +9,6 @@
     "core-js": "^3.6.4",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
-    "elliptic": "^6.5.2",
     "express": "^4.17.1",
     "node-fetch": "^2.6.0",
     "vue": "^2.6.11",

@@ -2,6 +2,7 @@ import P2pServer from "../commons/p2pServer";
 import { BROKER_WEBSOCKET_PORT, WEBSOCKET_URL_BASE } from "../config/env";
 import WebSocket from "ws";
 import Node from "../commons/Node";
+import Message from "../commons/message";
 
 declare var process: {
   env: {
@@ -44,9 +45,9 @@ export class NodeServer extends P2pServer {
     this.addClientNode(ws, req);
 
     // Handle when client disconnect
-    ws.on("close", () => {
-      const nodes = this.getClientAndServerNodeFrom(ws);
+    const nodes = this.getClientAndServerNodeFrom(ws);
 
+    ws.on("close", () => {
       console.log(`\nClient ${nodes.client.url} disconnected\n`);
 
       this.deleteClientNode(nodes.client);
@@ -63,6 +64,10 @@ export class NodeServer extends P2pServer {
     });
 
     ws.on("error", () => console.log(`Connection failed with ${peerURL}`));
+
+    ws.on("message", (message: Message) => {
+      console.log(`\Message received from ${peerURL} : ${message}\n`);
+    });
   }
 
   deleteServerNode(serverNode: Node): void {
@@ -71,28 +76,6 @@ export class NodeServer extends P2pServer {
     this.serverNodes.splice(this.serverNodes.indexOf(serverNode), 1);
     console.log(`\n${serverNode.url} successfully removed from servers list`);
   }
-
-  // initConnection(ws: WebSocket): void {
-  //   console.log(`Someone connected to the server`);
-
-  //   ws.on("message", (data: string) => {
-  //     var message = JSON.parse(data);
-  //     console.log("Message Reçu" + JSON.stringify(message));
-  //   });
-
-  //   ws.on("close", () => this.closeConnection(ws));
-  //   ws.on("error", () => this.closeConnection(ws));
-
-  //   this.write(
-  //     ws,
-  //     "----------------------------------- Successfully connected to the P2P server"
-  //   );
-  // }
-
-  // closeConnection(ws: WebSocket): void {
-  //   console.log(`Closing the connection`);
-  //   this.nodesClient.splice(this.nodesClient.indexOf(ws), 1);
-  // }
 
   write(socket: WebSocket, message: any): void {
     socket.send(JSON.stringify(message));
@@ -116,7 +99,7 @@ export class NodeServer extends P2pServer {
   private removeNodesAlreadyConnected(peers: string[]): string[] {
     const nodesConnectionURL = this.getServerNodesRL();
 
-    return peers.filter((x) => !nodesConnectionURL.includes(x));
+    return peers.filter(x => !nodesConnectionURL.includes(x));
   }
 
   private removeSelfUrlFrom(peers: string[]): string[] {
@@ -140,7 +123,7 @@ export class NodeServer extends P2pServer {
 
     return {
       client,
-      server,
+      server
     };
   }
 }

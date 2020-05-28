@@ -1,5 +1,6 @@
 import { Transaction } from "./transaction";
 import { Block } from "./block";
+import { MY_WALLET_ADDRESS } from "../config/env";
 
 export class Blockchain {
   public blockchain: Block[] = [];
@@ -13,7 +14,7 @@ export class Blockchain {
 
   getGenesisBlock(): Block {
     const timestamp = 0;
-    const genesisData = [new Transaction("null", "null", 0)];
+    const genesisData = [new Transaction("bbCoin", MY_WALLET_ADDRESS, 1000)];
     const previousHash = "0";
 
     return new Block(timestamp, genesisData, previousHash);
@@ -28,10 +29,6 @@ export class Blockchain {
       throw new Error("Transaction must include from and to address");
     }
 
-    if (!transaction.isValid()) {
-      throw new Error("Cannot add invalid transaction to chain");
-    }
-
     if (transaction.amount <= 0) {
       throw new Error("Transaction amount should be higher than 0");
     }
@@ -42,6 +39,7 @@ export class Blockchain {
       throw new Error("Not enough balance");
     }
 
+    console.log("\nAdd transaction in pending transaction...\n");
     this.pendingTransactions.push(transaction);
   }
 
@@ -57,7 +55,7 @@ export class Blockchain {
 
     // Reset the pending transactions and send the mining reward
     this.pendingTransactions = [
-      new Transaction("null", miningRewardAddress, this.miningReward)
+      new Transaction("bbCoin", miningRewardAddress, this.miningReward)
     ];
   }
 
@@ -88,13 +86,6 @@ export class Blockchain {
       ) {
         console.error(
           `Blockchain Invalid: invalid block: ${blockchain[index]}`
-        );
-        return false;
-      }
-
-      if (!blockchain[index].hasValidTransactions()) {
-        console.error(
-          `Blockchain Invalid: invalid transaction: ${blockchain[index]}`
         );
         return false;
       }
