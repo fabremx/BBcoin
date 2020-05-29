@@ -6,11 +6,7 @@
     </p>
 
     <div class="nodeInfo__container">
-      <table
-        v-for="(node, index) in nodesInfo"
-        :key="node.url"
-        class="nodeInfo__table"
-      >
+      <table v-for="(node, index) in nodesInfo" :key="node.url" class="nodeInfo__table">
         <tr>
           <td colspan="2">
             <h4>Node {{ index + 1 }}</h4>
@@ -27,6 +23,27 @@
         <tr class="even">
           <td class="prop">Servers</td>
           <td class="value">{{ node.servers.join(", ") }}</td>
+        </tr>
+        <tr class="odd">
+          <td colspan="2">
+            <h6>Pending transactions</h6>
+          </td>
+        </tr>
+        <tr>
+          <td class="transaction" colspan="2">
+            <div
+              v-for="(transaction, index) in node.pendingTransactions"
+              :key="index"
+              v-bind:class="{ even: index % 2 === 0, odd: index % 2 !== 0 }"
+            >
+              <span class="prop">from</span>
+              <span class="value">{{ transaction.fromAddress }}</span>
+              <span class="prop">to</span>
+              <span class="value">{{ transaction.toAddress }}</span>
+              <span class="prop">amount</span>
+              <span class="value">{{ transaction.amount }}</span>
+            </div>
+          </td>
         </tr>
       </table>
     </div>
@@ -98,8 +115,18 @@ td h4 {
   font-weight: 600;
 }
 
+td h6 {
+  color: #595959;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .nodeInfo__table tr {
   text-align: left;
+}
+.nodeInfo__table td {
+  padding: 5px 10px;
+  text-align: center;
 }
 .nodeInfo__table tr.even {
   background-color: #f6f6f6;
@@ -118,8 +145,29 @@ td.value {
   font-size: 12px;
 }
 
-.nodeInfo__table td {
+td.transaction {
+  padding: 0;
+  text-align: left;
+}
+td.transaction div {
+  display: flex;
+  align-items: baseline;
   padding: 5px 10px;
-  text-align: center;
+}
+td.transaction div.even {
+  background-color: #f6f6f6;
+}
+td.transaction div.odd {
+  background-color: white;
+}
+td.transaction .prop {
+  color: #595959;
+  font-size: 13px;
+}
+td.transaction .value {
+  margin-left: 5px;
+  margin-right: 15px;
+  color: #9b9b9b;
+  font-size: 12px;
 }
 </style>

@@ -1,12 +1,13 @@
 import P2pServer from "../commons/p2pServer";
 import { BROKER_WEBSOCKET_PORT, WEBSOCKET_URL_BASE } from "../constants/urls";
-import WebSocket from "ws";
-import Node from "../commons/Node";
-import Message from "../commons/message";
+import { TIME_WAITING_TRANSACTIONS } from "../constants/shared";
 import {
   NEW_TRANSACTION_MESSAGE,
   NEW_BLOCK_ADDED_MESSAGE
 } from "../constants/messageTypes";
+import WebSocket from "ws";
+import Node from "../commons/Node";
+import Message from "../commons/message";
 import Blockchain from "../commons/blockchain";
 
 declare var process: {
@@ -70,8 +71,11 @@ export class NodeServer extends P2pServer {
 
     ws.on("error", () => console.log(`Connection failed with ${peerURL}`));
 
-    ws.on("message", (message: Message) => {
-      console.log(`\Message received from ${peerURL} : ${message}\n`);
+    ws.on("message", (str: string) => {
+      const obj = JSON.parse(str);
+      console.log(`\Message received from ${peerURL} : `, obj);
+
+      const message = new Message(obj.type, obj.data);
       this.handleMessageReceived(message);
     });
   }
@@ -79,9 +83,22 @@ export class NodeServer extends P2pServer {
   handleMessageReceived(message: Message) {
     switch (message.type) {
       case NEW_TRANSACTION_MESSAGE:
-        Blockchain.addTransaction(message.transaction);
-        Blockchain.minePendingTransactions("test");
+        Blockchain.addTransaction(message.data);
+        // Let time before mining if other transaction come
+        // setTimeout(() => {
+        //   Blockchain.minePendingTransactions("test");
+
+        //   const message = new Message(
+        //     NEW_BLOCK_ADDED_MESSAGE,
+        //     Blockchain.getLatestBlock()
+        //   );
+        //   this.broadcast(message);
+        // }, TIME_WAITING_TRANSACTIONS);
+        break;
       case NEW_BLOCK_ADDED_MESSAGE:
+        // const newBlockchain = Blockchain.blockchain;
+        // newBlockchain.push(message.data);
+        // Blockchain.replaceChain(newBlockchain);
         break;
       default:
         break;

@@ -17,16 +17,12 @@
           <div class="blockchain__block_first">
             <div class="block__info">
               <div class="block__info--prop">PREVIOUS HASH</div>
-              <div class="block__info--value valid">
-                {{ block.previousHash }}
-              </div>
+              <div class="block__info--value valid">{{ block.previousHash }}</div>
             </div>
 
             <div class="block__info">
               <div class="block__info--prop">HASH</div>
-              <div class="block__info--value valid background">
-                {{ block.hash }}
-              </div>
+              <div class="block__info--value valid background">{{ block.hash }}</div>
             </div>
 
             <div class="block__info">
@@ -51,17 +47,12 @@
                 <span>></span>
                 {{ transaction.toAddress }}
               </div>
-              <div class="block__transactions--amount">
-                {{ transaction.amount }} b
-              </div>
+              <div class="block__transactions--amount">{{ transaction.amount }} b</div>
             </div>
           </div>
         </div>
 
-        <div
-          v-if="index !== blockchain.length - 1"
-          class="blockchain__arrow"
-        ></div>
+        <div v-if="index !== blockchain.length - 1" class="blockchain__arrow"></div>
       </div>
     </div>
   </div>
@@ -179,6 +170,7 @@ export default class Blockchain extends Vue {
 .blockchain__block__container {
   position: relative;
   width: 555px;
+  margin-bottom: 10px;
 }
 
 .blockchain__block {

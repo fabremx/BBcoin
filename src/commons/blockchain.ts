@@ -4,7 +4,7 @@ import { MY_WALLET_ADDRESS } from "../constants/shared";
 
 export class Blockchain {
   public blockchain: Block[] = [];
-  difficulty: number = 5;
+  difficulty: number = 3;
   pendingTransactions: Transaction[] = [];
   miningReward: number = 100;
 
@@ -51,7 +51,9 @@ export class Blockchain {
     );
 
     block.mineBlock(this.difficulty);
-    this.blockchain.push(block);
+    const newBlockchain = this.blockchain;
+    newBlockchain.push(block);
+    this.replaceChain(newBlockchain);
 
     // Reset the pending transactions and send the mining reward
     this.pendingTransactions = [

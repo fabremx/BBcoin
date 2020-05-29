@@ -1,2 +1,3 @@
 export const INTERVAL_RETRIEVE_PEERS = 5000;
+export const TIME_WAITING_TRANSACTIONS = 10000;
 export const MY_WALLET_ADDRESS = "MyWallet";

@@ -1,11 +1,9 @@
-import { Transaction } from "./transaction";
-
 export default class Message {
   type: string;
-  transaction: Transaction;
+  data: any;
 
-  constructor(type: string, transaction: Transaction) {
+  constructor(type: string, data: any) {
     this.type = type;
-    this.transaction = transaction;
+    this.data = data;
   }
 }

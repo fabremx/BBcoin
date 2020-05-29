@@ -21,7 +21,8 @@ class NodeHttpServer extends HttpServer {
     this.server.get("/infos", (req, res) => {
       const nodeInfo = {
         clients: NodeServer.getClientNodesURL(),
-        servers: NodeServer.getServerNodesRL()
+        servers: NodeServer.getServerNodesRL(),
+        pendingTransactions: Blockchain.pendingTransactions
       };
 
       res.status(200).send(JSON.stringify(nodeInfo));
@@ -42,8 +43,7 @@ class NodeHttpServer extends HttpServer {
       const transaction = new Transaction(
         req.body.transaction.fromAddress,
         req.body.transaction.toAddress,
-        req.body.transaction.amount,
-        req.body.transaction.signature
+        req.body.transaction.amount
       );
       console.log(`Recieve new transaction`, transaction);
 

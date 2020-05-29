@@ -37,6 +37,7 @@ export class Block {
       this.nonce++;
       this.hash = this.calculateHash();
     }
+
     console.log("BLOCK MINED: " + this.hash);
   }
 }
