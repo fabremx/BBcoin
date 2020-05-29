@@ -6,7 +6,11 @@
     </p>
 
     <div class="nodeInfo__container">
-      <table v-for="(node, index) in nodesInfo" :key="node.url" class="nodeInfo__table">
+      <table
+        v-for="(node, index) in nodesInfo"
+        :key="node.url"
+        class="nodeInfo__table"
+      >
         <tr>
           <td colspan="2">
             <h4>Node {{ index + 1 }}</h4>
@@ -69,7 +73,7 @@ export default class NodesInfo extends Vue {
     await utils.asyncForEach(
       nodesConnectedOnNetwork,
       async (nodeUrl: string) => {
-        const nodeInfo = await utils.getNodesInfo(nodeUrl);
+        const nodeInfo: any = await utils.getNodesInfo(nodeUrl);
         nodesInfo.push({ url: nodeUrl, ...nodeInfo });
       }
     );

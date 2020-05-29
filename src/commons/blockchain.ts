@@ -1,6 +1,7 @@
 import { Transaction } from "./transaction";
 import { Block } from "./block";
 import { MY_WALLET_ADDRESS } from "../constants/shared";
+import cloneDeep from "lodash.clonedeep";
 
 export class Blockchain {
   public blockchain: Block[] = [];
@@ -51,14 +52,17 @@ export class Blockchain {
     );
 
     block.mineBlock(this.difficulty);
-    const newBlockchain = this.blockchain;
+
+    // Create temporary chain with new block and check if we remplace the current one by the new one
+    const newBlockchain = cloneDeep(this.blockchain);
     newBlockchain.push(block);
-    this.replaceChain(newBlockchain);
+    this.blockchain = this.replaceChain(newBlockchain);
 
     // Reset the pending transactions and send the mining reward
-    this.pendingTransactions = [
-      new Transaction("bbCoin", miningRewardAddress, this.miningReward)
-    ];
+    // this.pendingTransactions = [
+    //   new Transaction("bbCoin", miningRewardAddress, this.miningReward)
+    // ];
+    this.pendingTransactions = [];
   }
 
   isNewBlockValid(previousBlock: Block, newBlock: Block): Boolean {
@@ -86,9 +90,7 @@ export class Blockchain {
         index !== blockchain.length - 1 &&
         !this.isNewBlockValid(blockchain[index], blockchain[index + 1])
       ) {
-        console.error(
-          `Blockchain Invalid: invalid block: ${blockchain[index]}`
-        );
+        console.error("Blockchain Invalid: invalid block", blockchain[index]);
         return false;
       }
     }
@@ -102,11 +104,11 @@ export class Blockchain {
       this.isBlockchainValid(newBlockchain) &&
       newBlockchain.length > this.blockchain.length
     ) {
-      console.log("Keep actual blockchain");
+      console.log("Replace blockchain with the new one");
       return newBlockchain;
     }
 
-    console.log("Replace blockchain with the new one");
+    console.log("Keep actual blockchain");
     return this.blockchain;
   }
 

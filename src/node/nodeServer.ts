@@ -9,6 +9,7 @@ import WebSocket from "ws";
 import Node from "../commons/Node";
 import Message from "../commons/message";
 import Blockchain from "../commons/blockchain";
+import cloneDeep from "lodash.clonedeep";
 
 declare var process: {
   env: {
@@ -84,21 +85,22 @@ export class NodeServer extends P2pServer {
     switch (message.type) {
       case NEW_TRANSACTION_MESSAGE:
         Blockchain.addTransaction(message.data);
-        // Let time before mining if other transaction come
-        // setTimeout(() => {
-        //   Blockchain.minePendingTransactions("test");
 
-        //   const message = new Message(
-        //     NEW_BLOCK_ADDED_MESSAGE,
-        //     Blockchain.getLatestBlock()
-        //   );
-        //   this.broadcast(message);
-        // }, TIME_WAITING_TRANSACTIONS);
+        // Let time before mining if other transaction come
+        setTimeout(() => {
+          Blockchain.minePendingTransactions("test");
+
+          const message = new Message(
+            NEW_BLOCK_ADDED_MESSAGE,
+            Blockchain.getLatestBlock()
+          );
+          this.broadcast(message);
+        }, TIME_WAITING_TRANSACTIONS);
         break;
       case NEW_BLOCK_ADDED_MESSAGE:
-        // const newBlockchain = Blockchain.blockchain;
-        // newBlockchain.push(message.data);
-        // Blockchain.replaceChain(newBlockchain);
+        const newBlockchain = cloneDeep(Blockchain.blockchain);
+        newBlockchain.push(message.data);
+        Blockchain.replaceChain(newBlockchain);
         break;
       default:
         break;

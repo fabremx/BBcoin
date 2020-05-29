@@ -22,6 +22,7 @@ class NodeHttpServer extends HttpServer {
       const nodeInfo = {
         clients: NodeServer.getClientNodesURL(),
         servers: NodeServer.getServerNodesRL(),
+        blockchain: Blockchain.blockchain,
         pendingTransactions: Blockchain.pendingTransactions
       };
 
