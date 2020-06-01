@@ -6,6 +6,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "buefy": "^0.8.20",
+    "concurrently": "^5.2.0",
     "core-js": "^3.6.4",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
@@ -38,9 +39,12 @@
     "vue-template-compiler": "^2.6.11"
   },
   "scripts": {
-    "node": "./node_modules/.bin/tsc && node dist/node/node.js",
-    "broker": "./node_modules/.bin/tsc && node dist/broker/broker.js",
+    "broker": "npm run build && node dist/broker/broker.js",
+    "node": "npm run build && node dist/node/node.js",
+    "servers": "npm run build && concurrently -k -n \"HTTP-SERVER,BROKER\" -c \"blue,magenta\" \"npm run client\"  \"node dist/broker/broker.js\"",
+    "nodes": "npm run build && concurrently -k -n \"NODE1,NODE2,NODE3,NODE4\" -c \"blue,magenta,yellow,green\" \"node dist/node/node.js\" \"set HTTP_PORT=3002 && set P2P_PORT=6002 && node dist/node/node.js\" \"set HTTP_PORT=3003 && set P2P_PORT=6003 && node dist/node/node.js\" \"set HTTP_PORT=3004 && set P2P_PORT=6004 && node dist/node/node.js\"",
     "client": "vue-cli-service serve ./src/client/src/main.ts",
+    "build": "./node_modules/.bin/tsc",
     "test": "jest ./src/*"
   },
   "prettier": {

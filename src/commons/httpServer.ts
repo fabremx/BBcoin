@@ -14,7 +14,7 @@ export default class HttpServer {
     this.server.use(cors());
 
     this.server.listen(this.HTTP_PORT, () => {
-      console.log(`Broker HTTP Server listening on port ${this.HTTP_PORT}`);
+      console.log(`HTTP Server listening on port ${this.HTTP_PORT}`);
     });
   }
 }
