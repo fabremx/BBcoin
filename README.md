@@ -64,15 +64,28 @@ BBcoin is divided into several parts :
 
 #### P2P Network
 
-marche avec les websockets
-explique le borker et les nodes
-comment ça marche
+BBcoin simulate a P2P network with Websocket. Below a schema explaining how one node connect together with the help of the broker.
+
+![P2P Network](images/p2p.jpg)
+
+- Step 1. A new node is created. It connect via websocket to the broker to notify that it exists and its ready to be connected with the others nodes. Except this simple connexion with the broker, no data are shared
+- Step 2. Each nodes make every 5s a REST call to the broker to get the current connected nodes on the network.
+- Step 3. Each Node connect to the new nodes or disconnect with killed nodes
+
+All Nodes are thus connected together and can shar datas.
 
 #### Node structure
 
-chaque est noeuf est full, light, miner
-ils ont http server et websocket
-Data is not persisted in nodes
+To resume the operation of bitcoin nodes, our node are at the same time a full, light and miner node.
+Each node have
+
+- A Websocket server: Allow to the others nodes to connect to it
+- A HTTP server: To expose information of the node. Usefull for the frontend to render blockchain infos.
+
+![Node Structure](images/node.jpg)
+
+Data are not persisted in the node. When a node is killed, it lose all its blockchain informations.
+However if we connect a new node, its blockchain info will be updated with the correct blockchain contained in the others nodes
 
 #### Blockchain structure
 
