@@ -89,18 +89,29 @@ However if we connect a new node, its blockchain info will be updated with the c
 
 #### Blockchain structure
 
-elémént d'un block
-genesis block
+the blockchain is an assembly of blocks. The first block of the chain is called _Genesis Block_
+Each block have 5 properties
+
+- _Timestamp_ Date of block creation
+- _transactions_ List of transaction (data of block)
+- _previousHash_ determines the previous block hash
+- _hash_ Hash of the block content - sha256(Timestamp + transactions + previousHash + nounce)
+- _nounce_ random number which allow proof of work
+
+_In case of conflicts_ between several nodes. The longer valid blockchain will be kept.
 
 #### Proof of work
 
-based on bitcoin
-mine array of transactions
-after the first transaction - wait 10 s before mining
-difficulty 3 avec temps aléatoire pour simuler différence de puissance de calcul
+BBcoin use proof of work as consensus protocol. It uses the same principle that Bitcoin use.
+
+When a transaction is made, each node wait 10s before to create the block and mine it. This time duration allow to add other transactions to the block before it will be created and mined.
+A block is mined when the hash calculated begin with 3 zeros. This is called the difficulty and it is set to 3.
+
+To avoid that each nodes of the network finish to mine the block at the same, BBcoin implementes a random time in addition of the difficulty. It simulate the case where nodes are launched on different machines with different calcul power.
 
 #### Front end and Transactions
 
-in case of demo allow to make transactions with any wallet to any wallet
-see network nide infos
-see blockchain info
+The frontend allow us to see the network and blockchain informations and test transactions.
+
+_This frontend is very simplist. No business rules are implemented_
+You can make transactions with any wallet to any wallet, have a negative balance on a wallet ...
